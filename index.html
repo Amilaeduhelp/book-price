@@ -78,24 +78,24 @@
     <script>
         // Book Data
         const books = [
-            { id: 1, name: "ලංකා ඉතිහාසය-1", price: 1600, image: "https://www.eduhelp.lk/wp-content/uploads/2025/04/web-01.jpg" },
-            { id: 2, name: "ලංකා ඉතිහාසය-2", price: 800, image: "images/web-02.jpg" },
-            { id: 3, name: "ලංකා ඉතිහාසය-3", price: 1200, image: "images/web-03.jpg" },
-            { id: 4, name: "ඉන්දියා ඉතිහාසය-1", price: 1300, image: "images/web-04.jpg" },
-            { id: 5, name: "ඉන්දියා ඉතිහාසය-2", price: 1100, image: "images/web-05.jpg" },
-            { id: 6, name: "යුරෝපා ඉතිහාසය-1", price: 850, image: "images/web-06.jpg" },
-            { id: 7, name: "යුරෝපා ඉතිහාසය-2", price: 800, image: "images/web-07.jpg" },
-            { id: 8, name: "ලංකා MCQ", price: 1500, image: "images/web-08.jpg" },
-            { id: 9, name: "ඉන්දියා MCQ", price: 1500, image: "images/web-09.jpg" },        
-            { id: 10, name: "යුරෝපා MCQ", price: 1500, image: "images/web-10.jpg" },
-            { id: 11, name: "ඉන්දියා අර්ථදීපනී", price: 2500, image: "images/web-17.jpg" },
-            { id: 12, name: "සා පෙළ උපකාරක පොත (ගුරු)", price: 1200, image: "images/web-11.jpg" },            
-            { id: 13, name: "සා පෙළ උපකාරක පොත (ශිෂ්‍ය)", price: 800, image: "images/web-12.jpg" },
-            { id: 14, name: "සා පෙළ ලංකා ලෝක සිතියම් පොත", price: 800, image: "images/web-13.jpg" },    
-            { id: 15, name: "සා පෙළ සිතියම් අභ්‍යාස පොත", price: 600, image: "images/web-18.jpg" },
-            { id: 16, name: "උසස් පෙළ ශ්‍රී ලංකා සිතියම් අභ්‍යාස පොත(PDF)", price: 00, image: "images/web-14.jpg" },
-            { id: 17, name: "උසස් පෙළ ඉන්දියා සිතියම් අභ්‍යාස පොත(PDF)", price: 00, image: "images/web-15.jpg" },
-            { id: 18, name: "උසස් පෙළ යුරෝපා සිතියම් අභ්‍යාස පොත(PDF)", price: 00, image: "images/web-16.jpg" },            
+            { id: 1, name: "ලංකා ඉතිහාසය-1", price: 1600},
+            { id: 2, name: "ලංකා ඉතිහාසය-2", price: 800 },
+            { id: 3, name: "ලංකා ඉතිහාසය-3", price: 1200 },
+            { id: 4, name: "ඉන්දියා ඉතිහාසය-1", price: 1300 },
+            { id: 5, name: "ඉන්දියා ඉතිහාසය-2", price: 1100 },
+            { id: 6, name: "යුරෝපා ඉතිහාසය-1", price: 850 },
+            { id: 7, name: "යුරෝපා ඉතිහාසය-2", price: 800 },
+            { id: 8, name: "ලංකා MCQ", price: 1500 },
+            { id: 9, name: "ඉන්දියා MCQ", price: 1500 },        
+            { id: 10, name: "යුරෝපා MCQ", price: 1500 },
+            { id: 11, name: "ඉන්දියා අර්ථදීපනී", price: 2500 },
+            { id: 12, name: "සා පෙළ උපකාරක පොත (ගුරු)", price: 1200 },            
+            { id: 13, name: "සා පෙළ උපකාරක පොත (ශිෂ්‍ය)", price: 800 },
+            { id: 14, name: "සා පෙළ ලංකා ලෝක සිතියම් පොත", price: 800 },    
+            { id: 15, name: "සා පෙළ සිතියම් අභ්‍යාස පොත", price: 600 },
+            { id: 16, name: "උසස් පෙළ ශ්‍රී ලංකා සිතියම් අභ්‍යාස පොත(PDF)", price: 0 },
+            { id: 17, name: "උසස් පෙළ ඉන්දියා සිතියම් අභ්‍යාස පොත(PDF)", price: 0 },
+            { id: 18, name: "උසස් පෙළ යුරෝපා සිතියම් අභ්‍යාස පොත(PDF)", price: 0 },            
         ];
 
         // Cart storage
@@ -107,11 +107,24 @@
             books.forEach(book => {
                 const bookDiv = document.createElement('div');
                 bookDiv.className = 'border p-4 text-center bg-white rounded';
+                
+                // Set different background colors based on book type for visual distinction
+                let bgColor = 'bg-white';
+                if (book.price === 0) {
+                    bgColor = 'bg-green-50';
+                } else if (book.name.includes('MCQ')) {
+                    bgColor = 'bg-blue-50';
+                } else if (book.name.includes('සිතියම්')) {
+                    bgColor = 'bg-yellow-50';
+                }
+                
+                bookDiv.className = `border p-4 text-center ${bgColor} rounded hover:shadow-md transition-shadow`;
+                
                 bookDiv.innerHTML = `
-                    <img src="${book.image}" alt="${book.name}" class="mx-auto mb-2 h-48 object-cover">
+                    <div class="flex items-center justify-center h-20 mb-2 text-3xl text-gray-500">📚</div>
                     <h3 class="font-semibold text-sm">${book.name}</h3>
-                    <p class="text-sm">Rs.${book.price}</p>
-                    <button onclick="addToCart(${book.id})" class="bg-blue-500 text-white px-4 py-2 mt-2 rounded text-sm">
+                    <p class="text-sm ${book.price === 0 ? 'text-green-600 font-bold' : ''}">${book.price === 0 ? 'Free (PDF)' : 'Rs.' + book.price}</p>
+                    <button onclick="addToCart(${book.id})" class="bg-blue-500 text-white px-4 py-2 mt-2 rounded text-sm hover:bg-blue-600 transition-colors">
                         Add to Cart 
                     </button>
                 `;
@@ -151,12 +164,12 @@
             // Populate cart items
             cart.forEach(book => {
                 const cartItemDiv = document.createElement('div');
-                cartItemDiv.className = 'flex justify-between items-center mb-2 text-sm';
+                cartItemDiv.className = 'flex justify-between items-center mb-2 text-sm p-2 border-b';
                 cartItemDiv.innerHTML = `
                     <span class="truncate w-1/2">${book.name}</span>
                     <div class="flex items-center">
-                        <span class="mr-2">Rs.${book.price} x ${book.quantity}</span>
-                        <button onclick="removeFromCart(${book.id})" class="bg-red-500 text-white px-2 py-1 rounded">
+                        <span class="mr-2">${book.price === 0 ? 'Free' : 'Rs.' + book.price} x ${book.quantity}</span>
+                        <button onclick="removeFromCart(${book.id})" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors">
                             × 
                         </button>
                     </div>
@@ -188,7 +201,7 @@
             const total = subtotal - discount;
 
             const message = cart.map(book => 
-                `${book.name} - Rs.${book.price} x ${book.quantity}`
+                `${book.name} - ${book.price === 0 ? 'Free (PDF)' : 'Rs.' + book.price} x ${book.quantity}`
             ).join('\n');
 
             return `
