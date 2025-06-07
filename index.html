@@ -33,6 +33,18 @@
             background: linear-gradient(45deg, #764ba2, #667eea);
             transform: scale(1.05);
         }
+        .filter-btn {
+            background: linear-gradient(45deg, #6366F1, #8B5CF6);
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover {
+            background: linear-gradient(45deg, #8B5CF6, #6366F1);
+            transform: scale(1.05);
+        }
+        .filter-btn.active {
+            background: linear-gradient(45deg, #10B981, #059669);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
         .cart-animation {
             animation: pulse 2s infinite;
         }
@@ -75,32 +87,33 @@
             left: 0;
         }
         
-        /* Banner responsive styles - FIXED */
-        .banner-container {
-            position: relative;
-            overflow: hidden;
-            background: white;
-            padding: 0.5rem 0;
-        }
-        
-        /* Remove animation/background for actual img */
+        /* Banner responsive styles */
+       /* Banner responsive styles - REPLACE the existing banner styles */
+.banner-container {
+    position: relative;
+    overflow: hidden;
+    background: white;
+    padding: 0.5rem 0;
+    width: 100%;
+}
+
 .banner-image {
     width: 100%;
     height: auto;
-    object-fit: cover;
-    display: none; /* Start hidden */
+    object-fit: contain; /* Changed from cover to contain */
+    object-position: center;
+    display: none;
     transition: all 0.3s ease;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    max-height: 300px;
+    max-height: 250px; /* Reduced max height */
+    min-height: 150px; /* Added minimum height */
 }
 
-/* Only show when image has fully loaded */
 .banner-image.loaded {
     display: block;
 }
 
-/* Loading placeholder box */
 .banner-placeholder {
     width: 100%;
     height: 180px;
@@ -109,6 +122,106 @@
     animation: loading 1.5s infinite;
     border-radius: 8px;
 }
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Mobile banner adjustments */
+@media (max-width: 640px) {
+    .banner-container {
+        padding: 0.25rem;
+    }
+    
+    .banner-image {
+        height: auto;
+        max-height: 180px; /* Smaller max height for mobile */
+        min-height: 120px; /* Smaller min height for mobile */
+        object-fit: contain; /* Ensure full image is visible */
+        object-position: center;
+        border-radius: 4px;
+        width: 100%;
+    }
+    
+    .mobile-padding {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .mobile-text {
+        font-size: 1.5rem;
+    }
+    
+    .mobile-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .mobile-book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .mobile-book-card {
+        padding: 0.75rem;
+    }
+    
+    .mobile-book-title {
+        font-size: 0.75rem;
+        line-height: 1.1;
+        min-height: 2.5rem;
+    }
+    
+    .mobile-cart-sticky {
+        position: relative;
+        top: auto;
+    }
+
+    .mobile-filter-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Tablet banner adjustments */
+@media (min-width: 641px) and (max-width: 768px) {
+    .banner-image {
+        height: auto;
+        max-height: 200px;
+        object-fit: contain;
+        object-position: center;
+    }
+    
+    .tablet-book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+/* Desktop banner adjustments */
+@media (min-width: 769px) {
+    .banner-image {
+        height: auto;
+        max-height: 280px;
+        object-fit: contain;
+    }
+}
+
+.banner-image-error {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 2rem;
+    border-radius: 8px;
+    height: 180px;
+}
+        }
         
         @keyframes loading {
             0% { background-position: 200% 0; }
@@ -127,7 +240,6 @@
                 border-radius: 4px;
             }
             
-            /* Mobile specific adjustments */
             .mobile-padding {
                 padding-left: 1rem;
                 padding-right: 1rem;
@@ -161,6 +273,11 @@
                 position: relative;
                 top: auto;
             }
+
+            .mobile-filter-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
         }
         
         @media (min-width: 641px) and (max-width: 768px) {
@@ -181,7 +298,6 @@
             }
         }
         
-        /* Improved mobile navigation */
         @media (max-width: 1024px) {
             .nav-scroll {
                 max-height: 50vh;
@@ -189,7 +305,6 @@
             }
         }
         
-        /* Better touch targets for mobile */
         @media (max-width: 640px) {
             .touch-target {
                 min-height: 44px;
@@ -202,14 +317,12 @@
             }
         }
         
-        /* Smooth animations for mobile */
         @media (prefers-reduced-motion: no-preference) {
             .smooth-scroll {
                 scroll-behavior: smooth;
             }
         }
         
-        /* Error handling for broken images */
         .banner-image-error {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -236,7 +349,7 @@
                          class="h-8 sm:h-12 mr-2 sm:mr-3"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div style="display:none;" class="h-8 sm:h-12 mr-2 sm:mr-3 bg-gray-200 rounded flex items-center px-2 text-xs">LOGO</div>
-                    <span class="text-lg sm:text-xl font-bold text-gray-800">Eduhelp</span>
+                    <span class="text-lg sm:text-xl font-bold text-gray-800"></span>
                 </div>
                 
                 <!-- Navigation Menu - Desktop -->
@@ -308,9 +421,23 @@
                 <!-- Books Section -->
                 <div class="lg:col-span-2 order-2 lg:order-1">
                     <div class="glass-morphism p-4 sm:p-6">
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 flex items-center">
-                            📚 Available Books
-                        </h2>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">
+                                📚 Available Items
+                            </h2>
+                            <!-- Filter Buttons -->
+                            <div class="flex gap-2 mobile-filter-buttons">
+                                <button id="filterAll" class="filter-btn active text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">
+                                    සියල්ල
+                                </button>
+                                <button id="filterBooks" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">
+                                    📖 පොත්
+                                </button>
+                                <button id="filterQuestions" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">
+                                    📝 ප්‍රශ්නපත්‍ර
+                                </button>
+                            </div>
+                        </div>
                         <div id="bookList" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mobile-book-grid tablet-book-grid">
                             <!-- Books will be dynamically added here -->
                         </div>
@@ -357,7 +484,7 @@
                         <div id="emptyCart" class="text-center text-gray-500 py-6 sm:py-8">
                             <div class="text-3xl sm:text-4xl mb-2">🛒</div>
                             <p class="text-sm sm:text-base">Your cart is empty</p>
-                            <p class="text-xs sm:text-sm">Add some books to get started!</p>
+                            <p class="text-xs sm:text-sm">Add some items to get started!</p>
                         </div>
                     </div>
                 </div>
@@ -387,7 +514,8 @@
                                 ℹ️ How to Order
                             </h3>
                             <ul class="list-disc list-inside text-xs sm:text-sm space-y-1 text-blue-800">
-                                <li>Select your desired books and add to cart</li>
+                                <li>Select your desired items and add to cart</li>
+                                <li>Use filter buttons to find books or question papers</li>
                                 <li>Review your order and click "Place Order"</li>
                                 <li>WhatsApp message will be sent with order details</li>
                                 <li>Or copy the message and send manually</li>
@@ -401,32 +529,34 @@
     </div>
 
     <script>
-        // Book Data
+        // Book Data with categories
         const books = [
-            { id: 1, name: "ලංකා ඉතිහාසය-1", price: 1600 },
-            { id: 2, name: "ලංකා ඉතිහාසය-2", price: 800 },
-            { id: 3, name: "ලංකා ඉතිහාසය-3", price: 1200 },
-            { id: 4, name: "ඉන්දියා ඉතිහාසය-1", price: 1300 },
-            { id: 5, name: "ඉන්දියා ඉතිහාසය-2", price: 1100 },
-            { id: 6, name: "යුරෝපා ඉතිහාසය-1", price: 850 },
-            { id: 7, name: "යුරෝපා ඉතිහාසය-2", price: 800 },
-            { id: 8, name: "ලංකා MCQ", price: 1500 },
-            { id: 9, name: "ඉන්දියා MCQ", price: 1500 },        
-            { id: 10, name: "යුරෝපා MCQ", price: 1500 },
-            { id: 11, name: "ඉන්දියා අර්ථදීපනී", price: 2500 },
-            { id: 12, name: "සා පෙළ උපකාරක පොත (ගුරු)", price: 1200 },            
-            { id: 13, name: "සා පෙළ උපකාරක පොත (ශිෂ්‍ය)", price: 800 },
-            { id: 14, name: "සා පෙළ ලංකා ලෝක සිතියම් පොත", price: 800 },    
-            { id: 15, name: "සා පෙළ සිතියම් අභ්‍යාස පොත", price: 600 },
-            { id: 16, name: "උසස් පෙළ ශ්‍රී ලංකා සිතියම් අභ්‍යාස පොත(PDF)", price: 0 },
-            { id: 17, name: "උසස් පෙළ ඉන්දියා සිතියම් අභ්‍යාස පොත(PDF)", price: 0 },
-            { id: 18, name: "උසස් පෙළ යුරෝපා සිතියම් අභ්‍යාස පොත(PDF)", price: 0 },            
+            { id: 1, name: "ලංකා ඉතිහාසය-1", price: 1600, category: "book" },
+            { id: 2, name: "ලංකා ඉතිහාසය-2", price: 800, category: "book" },
+            { id: 3, name: "ලංකා ඉතිහාසය-3", price: 1200, category: "book" },
+            { id: 4, name: "ඉන්දියා ඉතිහාසය-1", price: 1300, category: "book" },
+            { id: 5, name: "ඉන්දියා ඉතිහාසය-2", price: 1100, category: "book" },
+            { id: 6, name: "යුරෝපා ඉතිහාසය-1", price: 850, category: "book" },
+            { id: 7, name: "යුරෝපා ඉතිහාසය-2", price: 800, category: "book" },
+            { id: 8, name: "ලංකා MCQ පිළිතුරු විග්‍රහය", price: 1500, category: "book" },
+            { id: 9, name: "ඉන්දියා MCQ පිළිතුරු විග්‍රහය", price: 1500, category: "book" },        
+            { id: 10, name: "යුරෝපා MCQ පිළිතුරු විග්‍රහය", price: 1500, category: "book" },
+            { id: 11, name: "ඉන්දියා අර්ථදීපනී", price: 2500, category: "book" },
+            { id: 12, name: "සා පෙළ උපකාරක පොත (ගුරු)", price: 1200, category: "book" },            
+            { id: 13, name: "සා පෙළ උපකාරක පොත (ශිෂ්‍ය)", price: 800, category: "book" },
+            { id: 14, name: "සා පෙළ ලංකා ලෝක සිතියම් පොත", price: 800, category: "book" },    
+            { id: 15, name: "සා පෙළ සිතියම් අභ්‍යාස පොත", price: 600, category: "book" },
+            { id: 16, name: "උසස් පෙළ ශ්‍රී ලංකා සිතියම් අභ්‍යාස පොත(PDF)", price: 0, category: "book" },
+            { id: 17, name: "උසස් පෙළ ඉන්දියා සිතියම් අභ්‍යාස පොත(PDF)", price: 0, category: "book" },
+            { id: 18, name: "උසස් පෙළ යුරෝපා සිතියම් අභ්‍යාස පොත(PDF)", price: 0, category: "book" },
+            { id: 19, name: "13 ශ්‍රේණිය ඉන්දියා ඉතිහාසය ප්‍රශ්නපත්‍ර (MCQ හා සිතියම් පිළිතුරු පත්‍රය සමග(PDF)", price: 500, category: "question" },            
         ];
 
         // Cart storage
         let cart = [];
+        let currentFilter = 'all';
 
-        // Your WhatsApp number (replace with your actual number)
+        // Your WhatsApp number
         const BUSINESS_WHATSAPP = "+94716637804";
 
         // Banner error handling
@@ -444,240 +574,288 @@
             return window.innerWidth <= 640;
         }
 
-        // Initialize book list
-        function initBookList() {
+        // Filter books based on category
+        function filterBooks(category) {
+            currentFilter = category;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (category === 'all') {
+                document.getElementById('filterAll').classList.add('active');
+            } else if (category === 'book') {
+                document.getElementById('filterBooks').classList.add('active');
+            } else if (category === 'question') {
+                document.getElementById('filterQuestions').classList.add('active');
+            }
+            
+            // Filter and display books
+            const filteredBooks = category === 'all' ? books : books.filter(book => book.category === category);
+            displayBooks(filteredBooks);
+        }
+
+        // Display books
+        function displayBooks(booksToShow) {
             const bookList = document.getElementById('bookList');
             const isMobile = isMobileDevice();
             
-            books.forEach(book => {
+            // Clear existing books
+            bookList.innerHTML = '';
+            
+            booksToShow.forEach(book => {
                 const bookDiv = document.createElement('div');
+                const categoryIcon = book.category === 'book' ? '📖' : '📝';
+                const categoryLabel = book.category === 'book' ? 'පොත' : 'ප්‍රශ්නපත්‍ර';
+                
                 bookDiv.className = `bg-white/80 rounded-lg hover-lift cursor-pointer border border-white/30 ${isMobile ? 'mobile-book-card p-3' : 'p-4'}`;
                 bookDiv.innerHTML = `
                     <div class="text-center">
-                        <div class="${isMobile ? 'text-2xl mb-2' : 'text-3xl mb-3'}">📖</div>
-                        <h3 class="font-semibold text-gray-800 mb-2 flex items-center justify-center leading-tight ${isMobile ? 'mobile-book-title text-xs' : 'text-sm min-h-[3rem]'}">${book.name}</h3>
-                        <p class="${isMobile ? 'text-sm' : 'text-lg'} font-bold text-purple-600 mb-3">Rs.${book.price === 0 ? 'FREE' : book.price}</p>
-                        <button onclick="addToCart(${book.id})" class="gradient-btn text-white px-3 py-2 rounded-lg font-semibold w-full touch-target ${isMobile ? 'text-xs' : 'text-sm'}">
-                            Add to Cart 🛒
-                        </button>
-                    </div>
-                `;
-                bookList.appendChild(bookDiv);
-            });
-        }
+                        <div class="${isMobile ? 'text-2xl mb-2' : 'text-3xl mb-3'}">${categoryIcon}</div>
+                                               <div class="text-xs text-purple-600 font-semibold mb-1">${categoryLabel}</div>
+                       <h3 class="font-semibold text-gray-800 mb-2 flex items-center justify-center leading-tight ${isMobile ? 'mobile-book-title text-xs' : 'text-sm'} min-h-[2.5rem]">${book.name}</h3>
+                       <div class="text-lg font-bold text-green-600 mb-3">
+                           ${book.price === 0 ? 'නොමිලේ' : `Rs. ${book.price.toLocaleString()}`}
+                       </div>
+                       <button onclick="addToCart(${book.id})" class="gradient-btn text-white px-3 py-2 rounded-lg font-semibold w-full text-xs sm:text-sm touch-target">
+                           🛒 Add to Cart
+                       </button>
+                   </div>
+               `;
+               bookList.appendChild(bookDiv);
+           });
+       }
 
-        // Add to cart function
-        function addToCart(bookId) {
-            const book = books.find(b => b.id === bookId);
-            const existingCartItem = cart.find(item => item.id === bookId);
+       // Add to cart function
+       function addToCart(bookId) {
+           const book = books.find(b => b.id === bookId);
+           const existingItem = cart.find(item => item.id === bookId);
+           
+           if (existingItem) {
+               existingItem.quantity += 1;
+           } else {
+               cart.push({ ...book, quantity: 1 });
+           }
+           
+           updateCartDisplay();
+           
+           // Add visual feedback
+           const button = event.target;
+           const originalText = button.innerHTML;
+           button.innerHTML = '✅ Added!';
+           button.style.background = 'linear-gradient(45deg, #10B981, #059669)';
+           
+           setTimeout(() => {
+               button.innerHTML = originalText;
+               button.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+           }, 1000);
+       }
 
-            if (existingCartItem) {
-                existingCartItem.quantity++;
-            } else {
-                cart.push({...book, quantity: 1});
-            }
+       // Remove from cart
+       function removeFromCart(bookId) {
+           cart = cart.filter(item => item.id !== bookId);
+           updateCartDisplay();
+       }
 
-            updateCart();
-            
-            // Add visual feedback
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '✅ Added!';
-            button.style.background = '#10B981';
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.background = '';
-            }, 1000);
-        }
+       // Update quantity
+       function updateQuantity(bookId, change) {
+           const item = cart.find(item => item.id === bookId);
+           if (item) {
+               item.quantity += change;
+               if (item.quantity <= 0) {
+                   removeFromCart(bookId);
+               } else {
+                   updateCartDisplay();
+               }
+           }
+       }
 
-        // Remove from cart
-        function removeFromCart(bookId) {
-            cart = cart.filter(item => item.id !== bookId);
-            updateCart();
-        }
+       // Update cart display
+       function updateCartDisplay() {
+           const cartItemsDiv = document.getElementById('cartItems');
+           const cartItemCount = document.getElementById('cartItemCount');
+           const cartSummary = document.getElementById('cartSummary');
+           const emptyCart = document.getElementById('emptyCart');
+           
+           // Update cart count
+           const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+           cartItemCount.textContent = totalItems;
+           
+           if (cart.length === 0) {
+               cartSummary.classList.add('hidden');
+               emptyCart.classList.remove('hidden');
+               cartItemsDiv.innerHTML = '';
+               return;
+           }
+           
+           cartSummary.classList.remove('hidden');
+           emptyCart.classList.add('hidden');
+           
+           // Display cart items
+           cartItemsDiv.innerHTML = cart.map(item => `
+               <div class="bg-white/70 p-3 rounded-lg border">
+                   <div class="flex justify-between items-start mb-2">
+                       <h4 class="font-semibold text-sm text-gray-800 flex-1 mr-2">${item.name}</h4>
+                       <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-sm font-bold touch-target p-1">×</button>
+                   </div>
+                   <div class="flex justify-between items-center">
+                       <div class="flex items-center space-x-2">
+                           <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">-</button>
+                           <span class="text-sm font-semibold">${item.quantity}</span>
+                           <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">+</button>
+                       </div>
+                       <div class="text-sm font-bold text-green-600">
+                           ${item.price === 0 ? 'නොමිලේ' : `Rs. ${(item.price * item.quantity).toLocaleString()}`}
+                       </div>
+                   </div>
+               </div>
+           `).join('');
+           
+           // Calculate totals
+           const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+           const discount = subtotal * 0.10;
+           const total = subtotal - discount;
+           
+           document.getElementById('subtotalDisplay').textContent = subtotal.toLocaleString();
+           document.getElementById('discountDisplay').textContent = discount.toLocaleString();
+           document.getElementById('totalDisplay').textContent = total.toLocaleString();
+       }
 
-        // Update cart display
-        function updateCart() {
-            const cartItems = document.getElementById('cartItems');
-            const cartItemCount = document.getElementById('cartItemCount');
-            const cartSummary = document.getElementById('cartSummary');
-            const emptyCart = document.getElementById('emptyCart');
+       // Generate order message
+       function generateOrderMessage() {
+           const orderItems = cart.map(item => 
+               `• ${item.name} - ${item.quantity} ${item.quantity > 1 ? 'copies' : 'copy'} - ${item.price === 0 ? 'නොමිලේ' : `Rs. ${(item.price * item.quantity).toLocaleString()}`}`
+           ).join('\n');
+           
+           const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+           const discount = subtotal * 0.10;
+           const total = subtotal - discount;
+           
+           return `📚 *EDUHELP BOOKSTORE ORDER*
 
-            // Clear existing cart items
-            cartItems.innerHTML = '';
-            
-            if (cart.length === 0) {
-                emptyCart.classList.remove('hidden');
-                cartSummary.classList.add('hidden');
-                cartItemCount.textContent = '0';
-                return;
-            }
+*Order Details:*
+${orderItems}
 
-            emptyCart.classList.add('hidden');
-            
-            // Populate cart items
-            cart.forEach(book => {
-                const cartItemDiv = document.createElement('div');
-                cartItemDiv.className = 'bg-white/60 p-3 rounded-lg flex justify-between items-center';
-                cartItemDiv.innerHTML = `
-                    <div class="flex-1 pr-2">
-                        <div class="font-semibold text-xs sm:text-sm text-gray-800 leading-tight">${book.name}</div>
-                        <div class="text-xs text-gray-600">Rs.${book.price} × ${book.quantity}</div>
-                    </div>
-                    <button onclick="removeFromCart(${book.id})" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs transition-colors touch-target flex-shrink-0">
-                        ✕
-                    </button>
-                `;
-                cartItems.appendChild(cartItemDiv);
-            });
+*Summary:*
+Sub Total: Rs. ${subtotal.toLocaleString()}
+Discount (10%): -Rs. ${discount.toLocaleString()}
+*Total Amount: Rs. ${total.toLocaleString()}*
 
-            // Update cart count
-            cartItemCount.textContent = cart.length;
+*Contact Information:*
+Please confirm this order and provide delivery details.
 
-            // Calculate totals
-            const subtotal = cart.reduce((total, book) => total + (book.price * book.quantity), 0);
-            // Calculate total quantity of all books (including multiple copies)
-            const totalQuantity = cart.reduce((total, book) => total + book.quantity, 0);const discount = subtotal * 0.1; // 10% discount
-            const total = subtotal - discount;
+Thank you for choosing Eduhelp Bookstore! 🙏`;
+       }
 
-            // Update display
-            document.getElementById('subtotalDisplay').textContent = subtotal.toFixed(2);
-            document.getElementById('discountDisplay').textContent = discount.toFixed(2);
-            document.getElementById('totalDisplay').textContent = total.toFixed(2);
+       // Place order via WhatsApp
+       function placeOrder() {
+           if (cart.length === 0) {
+               alert('Your cart is empty! Please add some items first.');
+               return;
+           }
+           
+           const message = generateOrderMessage();
+           const encodedMessage = encodeURIComponent(message);
+           const whatsappUrl = `https://wa.me/${BUSINESS_WHATSAPP.replace('+', '')}?text=${encodedMessage}`;
+           
+           window.open(whatsappUrl, '_blank');
+       }
 
-            cartSummary.classList.remove('hidden');
-        }
+       // Copy message to clipboard
+       function copyMessage() {
+           if (cart.length === 0) {
+               alert('Your cart is empty! Please add some items first.');
+               return;
+           }
+           
+           const message = generateOrderMessage();
+           
+           if (navigator.clipboard && window.isSecureContext) {
+               navigator.clipboard.writeText(message).then(() => {
+                   showCopySuccess();
+               }).catch(() => {
+                   fallbackCopyTextToClipboard(message);
+               });
+           } else {
+               fallbackCopyTextToClipboard(message);
+           }
+       }
 
-        // Place order via WhatsApp
-        function placeOrder() {
-            if (cart.length === 0) return;
+       // Fallback copy method for older browsers
+       function fallbackCopyTextToClipboard(text) {
+           const textArea = document.createElement("textarea");
+           textArea.value = text;
+           textArea.style.top = "0";
+           textArea.style.left = "0";
+           textArea.style.position = "fixed";
+           textArea.style.opacity = "0";
+           
+           document.body.appendChild(textArea);
+           textArea.focus();
+           textArea.select();
+           
+           try {
+               document.execCommand('copy');
+               showCopySuccess();
+           } catch (err) {
+               alert('Failed to copy message. Please try again.');
+           }
+           
+           document.body.removeChild(textArea);
+       }
 
-            const subtotal = cart.reduce((total, book) => total + (book.price * book.quantity), 0);
-            const discount = subtotal * 0.1;
-            const total = subtotal - discount;
+       // Show copy success message
+       function showCopySuccess() {
+           const copyBtn = document.getElementById('copyBtn');
+           const originalText = copyBtn.innerHTML;
+           copyBtn.innerHTML = '<span class="mr-2">✅</span> Copied!';
+           copyBtn.style.background = 'linear-gradient(45deg, #10B981, #059669)';
+           
+           setTimeout(() => {
+               copyBtn.innerHTML = originalText;
+               copyBtn.style.background = 'linear-gradient(45deg, #3B82F6, #1D4ED8)';
+           }, 2000);
+       }
 
-            let message = "🛒 *EDUHELP BOOKSTORE ORDER*\n\n";
-            message += "══════════════════════════\n";
-            message += "📚 *ORDERED BOOKS:*\n";
-            message += "══════════════════════════\n\n";
-            
-            cart.forEach((book, index) => {
-                message += `${index + 1}. ${book.name}\n`;
-                message += `   💰 Rs.${book.price === 0 ? 'FREE' : book.price} × ${book.quantity} = Rs.${(book.price * book.quantity).toFixed(2)}\n\n`;
-            });
+       // Mobile menu toggle
+       function toggleMobileMenu() {
+           const mobileMenu = document.getElementById('mobileMenu');
+           mobileMenu.classList.toggle('hidden');
+       }
 
-            message += "══════════════════════════\n";
-            message += "💰 *PAYMENT SUMMARY:*\n";
-            message += "══════════════════════════\n";
-            message += `Sub Total: Rs.${subtotal.toFixed(2)}\n`;
-            message += `Discount (10%): -Rs.${discount.toFixed(2)}\n`;
-            message += `*Total Amount: Rs.${total.toFixed(2)}*\n\n`;
-            message += "══════════════════════════\n\n";
-            message += "📱 Please confirm this order and provide payment instructions.\n\n";
-            message += "Thank you for choosing Eduhelp! 🙏";
+       // Initialize the page
+       function initializePage() {
+           // Display all books initially
+           displayBooks(books);
+           
+           // Set up event listeners
+           document.getElementById('filterAll').addEventListener('click', () => filterBooks('all'));
+           document.getElementById('filterBooks').addEventListener('click', () => filterBooks('book'));
+           document.getElementById('filterQuestions').addEventListener('click', () => filterBooks('question'));
+           document.getElementById('orderBtn').addEventListener('click', placeOrder);
+           document.getElementById('copyBtn').addEventListener('click', copyMessage);
+           document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+           
+           // Close mobile menu when clicking outside
+           document.addEventListener('click', function(event) {
+               const mobileMenu = document.getElementById('mobileMenu');
+               const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+               
+               if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                   mobileMenu.classList.add('hidden');
+               }
+           });
+           
+           // Handle window resize
+           window.addEventListener('resize', () => {
+               const filteredBooks = currentFilter === 'all' ? books : books.filter(book => book.category === currentFilter);
+               displayBooks(filteredBooks);
+           });
+       }
 
-            const whatsappUrl = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        // Copy message to clipboard
-        function copyMessage() {
-            if (cart.length === 0) return;
-
-            const subtotal = cart.reduce((total, book) => total + (book.price * book.quantity), 0);
-            const discount = subtotal * 0.1;
-            const total = subtotal - discount;
-
-            let message = "🛒 EDUHELP BOOKSTORE ORDER\n\n";
-            message += "════════════════════════\n";
-            message += "📚 ORDERED BOOKS:\n";
-            message += "════════════════════════\n\n";
-            
-            cart.forEach((book, index) => {
-                message += `${index + 1}. ${book.name}\n`;
-                message += `   💰 Rs.${book.price === 0 ? 'FREE' : book.price} × ${book.quantity} = Rs.${(book.price * book.quantity).toFixed(2)}\n\n`;
-            });
-
-            message += "════════════════════════\n";
-            message += "💰 PAYMENT SUMMARY:\n";
-            message += "════════════════════════\n";
-            message += `Sub Total: Rs.${subtotal.toFixed(2)}\n`;
-            message += `Discount (10%): -Rs.${discount.toFixed(2)}\n`;
-            message += `Total Amount: Rs.${total.toFixed(2)}\n\n`;
-            message += "════════════════════════\n\n";
-            message += "📱 Please confirm this order and provide payment instructions.\n\n";
-            message += "Thank you for choosing Eduhelp! 🙏\n\n";
-            message += `WhatsApp: ${BUSINESS_WHATSAPP}`;
-
-            navigator.clipboard.writeText(message).then(() => {
-                const copyBtn = document.getElementById('copyBtn');
-                const originalText = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<span class="mr-2">✅</span> Message Copied!';
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalText;
-                }, 2000);
-            }).catch(() => {
-                // Fallback for browsers that don't support clipboard API
-                const textArea = document.createElement('textarea');
-                textArea.value = message;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                const copyBtn = document.getElementById('copyBtn');
-                const originalText = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<span class="mr-2">✅</span> Message Copied!';
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalText;
-                }, 2000);
-            });
-        }
-
-        // Mobile menu toggle
-        function initMobileMenu() {
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileMenu = document.getElementById('mobileMenu');
-
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // Close mobile menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-                    mobileMenu.classList.add('hidden');
-                }
-            });
-
-            // Close mobile menu when window is resized to desktop
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 1024) {
-                    mobileMenu.classList.add('hidden');
-                }
-            });
-        }
-
-        // Initialize everything when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initBookList();
-            initMobileMenu();
-            
-            // Add event listeners for order buttons
-            document.getElementById('orderBtn').addEventListener('click', placeOrder);
-            document.getElementById('copyBtn').addEventListener('click', copyMessage);
-            
-            // Handle responsive changes
-            window.addEventListener('resize', () => {
-                // You can add responsive adjustments here if needed
-            });
-        });
-
-        // Handle window resize for responsive adjustments
-        window.addEventListener('resize', function() {
-            // Force recalculation of mobile layouts if needed
-            const isMobile = isMobileDevice();
-        });
-    </script>
+       // Initialize when DOM is loaded
+       document.addEventListener('DOMContentLoaded', initializePage);
+   </script>
 </body>
 </html>
