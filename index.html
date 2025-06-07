@@ -49,6 +49,14 @@
             background: linear-gradient(45deg, #059669, #10B981);
             transform: scale(1.05);
         }
+        .copy-btn {
+            background: linear-gradient(45deg, #3B82F6, #1D4ED8);
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: linear-gradient(45deg, #1D4ED8, #3B82F6);
+            transform: scale(1.05);
+        }
         .nav-link {
             position: relative;
             overflow: hidden;
@@ -65,6 +73,41 @@
         }
         .nav-link:hover::after {
             left: 0;
+        }
+        
+        /* Banner responsive styles */
+        .banner-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .banner-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        /* Mobile banner adjustments */
+        @media (max-width: 640px) {
+            .banner-image {
+                height: 200px;
+                object-position: center;
+            }
+        }
+        
+        @media (min-width: 641px) and (max-width: 768px) {
+            .banner-image {
+                height: 250px;
+                object-position: center;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .banner-image {
+                height: 320px;
+            }
         }
     </style>
 </head>
@@ -119,10 +162,12 @@
         </div>
     </nav>
 
-    <!-- Banner Section -->
-    <div class="bg-white">
-        <div class="container mx-auto">
-            <img src="https://www.eduhelp.lk/wp-content/uploads/2025/05/1c.jpg" alt="Eduhelp Banner" class="w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 object-cover">
+    <!-- Improved Banner Section -->
+    <div class="bg-white banner-container">
+        <div class="container mx-auto px-4 sm:px-0">
+            <img src="https://www.eduhelp.lk/wp-content/uploads/2025/05/1c.jpg" 
+                 alt="Eduhelp Banner" 
+                 class="banner-image rounded-none sm:rounded-lg shadow-sm">
         </div>
     </div>
 
@@ -179,6 +224,9 @@
                                 <button id="orderBtn" class="w-full order-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center">
                                     <span class="mr-2">📱</span> Place Order via WhatsApp
                                 </button>
+                                <button id="copyBtn" class="w-full copy-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center">
+                                    <span class="mr-2">📋</span> Copy and Send Message
+                                </button>
                             </div>
                         </div>
                         
@@ -218,6 +266,7 @@
                                 <li>Select your desired books and add to cart</li>
                                 <li>Review your order and click "Place Order"</li>
                                 <li>WhatsApp message will be sent with order details</li>
+                                <li>Or copy the message and send manually</li>
                                 <li>We will contact you with payment instructions</li>
                             </ul>
                         </div>
@@ -415,6 +464,71 @@ Thank you!`;
             }, 3000);
         }
 
+        // Function to copy order message to clipboard
+        function copyOrderMessage() {
+            if (cart.length === 0) {
+                alert('Your cart is empty! Please add some books first.');
+                return;
+            }
+
+            const orderMessage = generateOrderMessage();
+            
+            // Try to copy to clipboard
+            if (navigator.clipboard && window.isSecureContext) {
+                // Use the modern clipboard API
+                navigator.clipboard.writeText(orderMessage).then(() => {
+                    showCopyConfirmation();
+                }).catch(err => {
+                    // Fallback for clipboard API failure
+                    fallbackCopyText(orderMessage);
+                });
+            } else {
+                // Fallback for older browsers or non-secure contexts
+                fallbackCopyText(orderMessage);
+            }
+        }
+
+        // Fallback copy function for older browsers
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopyConfirmation();
+                } else {
+                    alert('Copy failed. Please try manually copying the message.');
+                }
+            } catch (err) {
+                alert('Copy not supported. Please copy the message manually.');
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // Show copy confirmation
+        function showCopyConfirmation() {
+            const button = document.getElementById('copyBtn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="mr-2">✅</span> Message Copied!';
+            button.style.background = '#10B981';
+            
+            // Show alert with instructions
+            alert(`Message copied to clipboard!\n\nNow you can:\n1. Open WhatsApp manually\n2. Go to chat with +94 716637804\n3. Paste the message and send\n\nOr you can send via any other messaging app.`);
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '';
+            }, 3000);
+        }
+
         // Mobile menu toggle
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
@@ -431,6 +545,7 @@ Thank you!`;
             
             // Add event listeners
             document.getElementById('orderBtn').addEventListener('click', placeOrder);
+            document.getElementById('copyBtn').addEventListener('click', copyOrderMessage);
             document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
         });
     </script>
