@@ -6,353 +6,59 @@
     <title>Eduhelp Bookstore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+        .main-content{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+        .glass-morphism{background:rgba(255,255,255,0.25);backdrop-filter:blur(10px);border-radius:20px;border:1px solid rgba(255,255,255,0.18)}
+        .hover-lift{transition:all 0.3s ease}
+        .hover-lift:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,0,0,0.15)}
+        .gradient-btn{background:linear-gradient(45deg,#667eea,#764ba2);transition:all 0.3s ease}
+        .gradient-btn:hover{background:linear-gradient(45deg,#764ba2,#667eea);transform:scale(1.05)}
+        .filter-btn{background:linear-gradient(45deg,#6366F1,#8B5CF6);transition:all 0.3s ease}
+        .filter-btn:hover{background:linear-gradient(45deg,#8B5CF6,#6366F1);transform:scale(1.05)}
+        .filter-btn.active{background:linear-gradient(45deg,#10B981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.4)}
+        .cart-animation{animation:pulse 2s infinite}
+        @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+        .order-btn{background:linear-gradient(45deg,#10B981,#059669);transition:all 0.3s ease}
+        .order-btn:hover{background:linear-gradient(45deg,#059669,#10B981);transform:scale(1.05)}
+        .copy-btn{background:linear-gradient(45deg,#3B82F6,#1D4ED8);transition:all 0.3s ease}
+        .copy-btn:hover{background:linear-gradient(45deg,#1D4ED8,#3B82F6);transform:scale(1.05)}
+        .nav-link{position:relative;overflow:hidden}
+        .nav-link::after{content:'';position:absolute;bottom:0;left:-100%;width:100%;height:2px;background:linear-gradient(45deg,#10B981,#059669);transition:left 0.3s ease}
+        .nav-link:hover::after{left:0}
+        .banner-container{position:relative;overflow:hidden;background:white;padding:0.5rem 0;width:100%}
+        .banner-image{width:100%;height:auto;object-fit:contain;object-position:center;display:none;transition:all 0.3s ease;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-height:250px;min-height:150px}
+        .banner-image.loaded{display:block}
+        .banner-image-error{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:bold;text-align:center;padding:2rem;border-radius:8px;height:180px}
+        @media(max-width:640px){
+            .banner-container{padding:0.25rem}
+            .banner-image{max-height:180px;min-height:120px;border-radius:4px}
+            .mobile-padding{padding-left:1rem;padding-right:1rem}
+            .mobile-text{font-size:1.5rem}
+            .mobile-grid{grid-template-columns:1fr;gap:1rem}
+            .mobile-book-grid{grid-template-columns:repeat(2,1fr);gap:0.5rem}
+            .mobile-book-card{padding:0.75rem}
+            .mobile-book-title{font-size:0.75rem;line-height:1.1;min-height:2.5rem}
+            .mobile-cart-sticky{position:relative;top:auto}
+            .mobile-filter-buttons{flex-direction:column;gap:0.5rem}
+            .touch-target{min-height:44px;min-width:44px}
+            .mobile-contact-grid{grid-template-columns:1fr;gap:1rem}
         }
-        .main-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        @media(min-width:641px)and (max-width:768px){
+            .banner-image{max-height:200px}
+            .tablet-book-grid{grid-template-columns:repeat(2,1fr);gap:0.75rem}
         }
-        .glass-morphism {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-        .hover-lift {
-            transition: all 0.3s ease;
-        }
-        .hover-lift:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        .gradient-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            transition: all 0.3s ease;
-        }
-        .gradient-btn:hover {
-            background: linear-gradient(45deg, #764ba2, #667eea);
-            transform: scale(1.05);
-        }
-        .filter-btn {
-            background: linear-gradient(45deg, #6366F1, #8B5CF6);
-            transition: all 0.3s ease;
-        }
-        .filter-btn:hover {
-            background: linear-gradient(45deg, #8B5CF6, #6366F1);
-            transform: scale(1.05);
-        }
-        .filter-btn.active {
-            background: linear-gradient(45deg, #10B981, #059669);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-        }
-        .cart-animation {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .order-btn {
-            background: linear-gradient(45deg, #10B981, #059669);
-            transition: all 0.3s ease;
-        }
-        .order-btn:hover {
-            background: linear-gradient(45deg, #059669, #10B981);
-            transform: scale(1.05);
-        }
-        .copy-btn {
-            background: linear-gradient(45deg, #3B82F6, #1D4ED8);
-            transition: all 0.3s ease;
-        }
-        .copy-btn:hover {
-            background: linear-gradient(45deg, #1D4ED8, #3B82F6);
-            transform: scale(1.05);
-        }
-        .nav-link {
-            position: relative;
-            overflow: hidden;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(45deg, #10B981, #059669);
-            transition: left 0.3s ease;
-        }
-        .nav-link:hover::after {
-            left: 0;
-        }
-        
-        /* Banner responsive styles */
-       /* Banner responsive styles - REPLACE the existing banner styles */
-.banner-container {
-    position: relative;
-    overflow: hidden;
-    background: white;
-    padding: 0.5rem 0;
-    width: 100%;
-}
-
-.banner-image {
-    width: 100%;
-    height: auto;
-    object-fit: contain; /* Changed from cover to contain */
-    object-position: center;
-    display: none;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    max-height: 250px; /* Reduced max height */
-    min-height: 150px; /* Added minimum height */
-}
-
-.banner-image.loaded {
-    display: block;
-}
-
-.banner-placeholder {
-    width: 100%;
-    height: 180px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-    border-radius: 8px;
-}
-
-@keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Mobile banner adjustments */
-@media (max-width: 640px) {
-    .banner-container {
-        padding: 0.25rem;
-    }
-    
-    .banner-image {
-        height: auto;
-        max-height: 180px; /* Smaller max height for mobile */
-        min-height: 120px; /* Smaller min height for mobile */
-        object-fit: contain; /* Ensure full image is visible */
-        object-position: center;
-        border-radius: 4px;
-        width: 100%;
-    }
-    
-    .mobile-padding {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    
-    .mobile-text {
-        font-size: 1.5rem;
-    }
-    
-    .mobile-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .mobile-book-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    
-    .mobile-book-card {
-        padding: 0.75rem;
-    }
-    
-    .mobile-book-title {
-        font-size: 0.75rem;
-        line-height: 1.1;
-        min-height: 2.5rem;
-    }
-    
-    .mobile-cart-sticky {
-        position: relative;
-        top: auto;
-    }
-
-    .mobile-filter-buttons {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-}
-
-/* Tablet banner adjustments */
-@media (min-width: 641px) and (max-width: 768px) {
-    .banner-image {
-        height: auto;
-        max-height: 200px;
-        object-fit: contain;
-        object-position: center;
-    }
-    
-    .tablet-book-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-    }
-}
-
-/* Desktop banner adjustments */
-@media (min-width: 769px) {
-    .banner-image {
-        height: auto;
-        max-height: 280px;
-        object-fit: contain;
-    }
-}
-
-.banner-image-error {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-    padding: 2rem;
-    border-radius: 8px;
-    height: 180px;
-}
-        }
-        
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* Mobile banner adjustments */
-        @media (max-width: 640px) {
-            .banner-container {
-                padding: 0.25rem;
-            }
-            
-            .banner-image {
-                height: 180px;
-                object-position: center;
-                border-radius: 4px;
-            }
-            
-            .mobile-padding {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-            
-            .mobile-text {
-                font-size: 1.5rem;
-            }
-            
-            .mobile-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            .mobile-book-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.5rem;
-            }
-            
-            .mobile-book-card {
-                padding: 0.75rem;
-            }
-            
-            .mobile-book-title {
-                font-size: 0.75rem;
-                line-height: 1.1;
-                min-height: 2.5rem;
-            }
-            
-            .mobile-cart-sticky {
-                position: relative;
-                top: auto;
-            }
-
-            .mobile-filter-buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-        }
-        
-        @media (min-width: 641px) and (max-width: 768px) {
-            .banner-image {
-                height: 220px;
-                object-position: center;
-            }
-            
-            .tablet-book-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.75rem;
-            }
-        }
-        
-        @media (min-width: 769px) {
-            .banner-image {
-                height: 280px;
-            }
-        }
-        
-        @media (max-width: 1024px) {
-            .nav-scroll {
-                max-height: 50vh;
-                overflow-y: auto;
-            }
-        }
-        
-        @media (max-width: 640px) {
-            .touch-target {
-                min-height: 44px;
-                min-width: 44px;
-            }
-            
-            .mobile-contact-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-        }
-        
-        @media (prefers-reduced-motion: no-preference) {
-            .smooth-scroll {
-                scroll-behavior: smooth;
-            }
-        }
-        
-        .banner-image-error {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-align: center;
-            padding: 2rem;
-            border-radius: 8px;
-        }
+        @media(min-width:769px){.banner-image{max-height:280px}}
+        @media(max-width:1024px){.nav-scroll{max-height:50vh;overflow-y:auto}}
+        @media(prefers-reduced-motion:no-preference){.smooth-scroll{scroll-behavior:smooth}}
     </style>
 </head>
 <body class="min-h-screen smooth-scroll">
-    <!-- Navigation Header -->
     <nav class="bg-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-2 sm:py-3">
-                <!-- Logo -->
                 <div class="flex items-center">
-                    <img src="https://www.eduhelp.lk/wp-content/uploads/2025/05/EduhelpLogo_2023-01.jpg" 
-                         alt="Eduhelp Logo" 
-                         class="h-8 sm:h-12 mr-2 sm:mr-3"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <div style="display:none;" class="h-8 sm:h-12 mr-2 sm:mr-3 bg-gray-200 rounded flex items-center px-2 text-xs">LOGO</div>
-                    <span class="text-lg sm:text-xl font-bold text-gray-800"></span>
+                    <img src="https://www.eduhelp.lk/wp-content/uploads/2025/05/EduhelpLogo_2023-01.jpg" alt="Eduhelp Logo" class="h-8 sm:h-12 mr-2 sm:mr-3" onerror="this.style.display='none'">
                 </div>
-                
-                <!-- Navigation Menu - Desktop -->
                 <div class="hidden lg:flex space-x-4 xl:space-x-6">
                     <a href="https://www.eduhelp.lk/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">මුල පිටුව</a>
                     <a href="https://www.eduhelp.lk/index.php/news/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">පුවත්</a>
@@ -364,18 +70,12 @@
                     <a href="https://www.eduhelp.lk/index.php/contact/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">විමසීම්</a>
                     <a href="https://www.eduhelp.lk/index.php/events/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">විශේෂ අවස්ථා</a>
                 </div>
-                
-                <!-- Mobile Menu Button -->
                 <div class="lg:hidden">
                     <button id="mobileMenuBtn" class="text-gray-700 hover:text-green-600 focus:outline-none touch-target p-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
             </div>
-            
-            <!-- Mobile Menu -->
             <div id="mobileMenu" class="hidden lg:hidden pb-4 border-t border-gray-200">
                 <div class="nav-scroll flex flex-col space-y-1 pt-4">
                     <a href="https://www.eduhelp.lk/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">මුල පිටුව</a>
@@ -392,95 +92,51 @@
         </div>
     </nav>
 
-    <!-- Fixed Banner Section -->
     <div class="banner-container">
         <div class="container mx-auto px-2 sm:px-4">
-            <img id="bannerImage"
-                 src="https://www.eduhelp.lk/wp-content/uploads/2025/05/1c.jpg" 
-                 alt="Eduhelp Banner" 
-                 class="banner-image"
-                 onerror="handleBannerError(this)"
-                 onload="handleBannerLoad(this)">
-            <div id="bannerError" class="banner-image-error hidden">
-                📚 EDUHELP BOOKSTORE<br>
-                <span class="text-sm">Your Ultimate Learning Resource Center</span>
-            </div>
+            <img id="bannerImage" src="https://www.eduhelp.lk/wp-content/uploads/2025/05/1c.jpg" alt="Eduhelp Banner" class="banner-image" onerror="handleBannerError(this)" onload="handleBannerLoad(this)">
+            <div id="bannerError" class="banner-image-error hidden">📚 EDUHELP BOOKSTORE<br><span class="text-sm">Your Ultimate Learning Resource Center</span></div>
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content min-h-screen">
         <div class="container mx-auto mobile-padding p-4 sm:p-6 max-w-6xl">
-            <!-- Header -->
             <div class="text-center mb-6 sm:mb-8 pt-4 sm:pt-8">
                 <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 drop-shadow-lg mobile-text">📚 EDUHELP BOOKSTORE</h1>
                 <p class="text-white/80 text-sm sm:text-base lg:text-lg">Your Ultimate Learning Resource Center</p>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mobile-grid">
-                <!-- Books Section -->
                 <div class="lg:col-span-2 order-2 lg:order-1">
                     <div class="glass-morphism p-4 sm:p-6">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">
-                                📚 Available Items
-                            </h2>
-                            <!-- Filter Buttons -->
+                            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">📚 Available Items</h2>
                             <div class="flex gap-2 mobile-filter-buttons">
-                                <button id="filterAll" class="filter-btn active text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">
-                                    සියල්ල
-                                </button>
-                                <button id="filterBooks" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">
-                                    📖 පොත්
-                                </button>
-                                <button id="filterQuestions" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">
-                                    📝 ප්‍රශ්නපත්‍ර
-                                </button>
+                                <button id="filterAll" class="filter-btn active text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">සියල්ල</button>
+                                <button id="filterBooks" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">📖 පොත්</button>
+                                <button id="filterQuestions" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">📝 ප්‍රශ්නපත්‍ර</button>
                             </div>
                         </div>
-                        <div id="bookList" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mobile-book-grid tablet-book-grid">
-                            <!-- Books will be dynamically added here -->
-                        </div>
+                        <div id="bookList" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mobile-book-grid tablet-book-grid"></div>
                     </div>
                 </div>
 
-                <!-- Cart Section -->
                 <div class="lg:col-span-1 order-1 lg:order-2">
                     <div class="glass-morphism p-4 sm:p-6 sticky top-20 sm:top-24 mobile-cart-sticky">
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                            🛒 Shopping Cart 
-                            <span id="cartItemCount" class="ml-2 bg-red-500 text-white rounded-full px-2 sm:px-3 py-1 text-sm cart-animation">0</span>
-                        </h2>
-                        
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 flex items-center">🛒 Shopping Cart <span id="cartItemCount" class="ml-2 bg-red-500 text-white rounded-full px-2 sm:px-3 py-1 text-sm cart-animation">0</span></h2>
                         <div id="cartItems" class="max-h-48 sm:max-h-64 overflow-y-auto mb-4 space-y-2"></div>
-                        
                         <div id="cartSummary" class="hidden">
                             <div class="bg-white/50 p-3 sm:p-4 rounded-lg space-y-2 mb-4 text-sm sm:text-base">
-                                <div class="flex justify-between">
-                                    <span>Sub Total:</span>
-                                    <span class="font-semibold">Rs.<span id="subtotalDisplay">0.00</span></span>
-                                </div>
-                                <div class="flex justify-between text-green-600">
-                                    <span>Discount (10%):</span>
-                                    <span class="font-semibold">-Rs.<span id="discountDisplay">0.00</span></span>
-                                </div>
+                                <div class="flex justify-between"><span>Sub Total:</span><span class="font-semibold">Rs.<span id="subtotalDisplay">0.00</span></span></div>
+                                <div class="flex justify-between text-green-600"><span>Discount (10%):</span><span class="font-semibold">-Rs.<span id="discountDisplay">0.00</span></span></div>
                                 <hr class="my-2">
-                                <div class="flex justify-between text-lg sm:text-xl font-bold text-gray-800">
-                                    <span>Total Amount:</span>
-                                    <span>Rs.<span id="totalDisplay">0.00</span></span>
-                                </div>
+                                <div class="flex justify-between text-lg sm:text-xl font-bold text-gray-800"><span>Total Amount:</span><span>Rs.<span id="totalDisplay">0.00</span></span></div>
                             </div>
-                            
                             <div class="space-y-3">
-                                <button id="orderBtn" class="w-full order-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target">
-                                    <span class="mr-2">📱</span> Place Order via WhatsApp
-                                </button>
-                                <button id="copyBtn" class="w-full copy-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target">
-                                    <span class="mr-2">📋</span> Copy and Send Message
-                                </button>
+                                <button id="orderBtn" class="w-full order-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target"><span class="mr-2">📱</span>Place Order via WhatsApp</button>
+                                <button id="copyBtn" class="w-full copy-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target"><span class="mr-2">📋</span>Copy and Send Message</button>
                             </div>
                         </div>
-                        
                         <div id="emptyCart" class="text-center text-gray-500 py-6 sm:py-8">
                             <div class="text-3xl sm:text-4xl mb-2">🛒</div>
                             <p class="text-sm sm:text-base">Your cart is empty</p>
@@ -490,29 +146,20 @@
                 </div>
             </div>
 
-            <!-- Contact Information Section -->
             <div class="mt-6 sm:mt-8">
                 <div class="glass-morphism p-4 sm:p-6">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 flex items-center">
-                        📞 Contact Information
-                    </h2>
-                    
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 flex items-center">📞 Contact Information</h2>
                     <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mobile-contact-grid">
                         <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
-                            <h3 class="font-bold text-green-700 mb-2 flex items-center text-sm sm:text-base">
-                                📱 Get in Touch
-                            </h3>
+                            <h3 class="font-bold text-green-700 mb-2 flex items-center text-sm sm:text-base">📱 Get in Touch</h3>
                             <div class="space-y-2 text-xs sm:text-sm text-green-800">
                                 <p><strong>WhatsApp:</strong> <a href="https://wa.me/+94716637804" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-semibold break-all">+94 716637804</a></p>
                                 <p><strong>Phone:</strong> <a href="tel:+94701551279" class="text-blue-600 hover:text-blue-800 underline font-semibold">0701551279</a></p>
                                 <p><strong>Email:</strong> <a href="mailto:urc.eduhelp@gmail.com" class="text-blue-600 hover:text-blue-800 underline font-semibold break-all">urc.eduhelp@gmail.com</a></p>
                             </div>
                         </div>
-
                         <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
-                            <h3 class="font-bold text-blue-700 mb-2 flex items-center text-sm sm:text-base">
-                                ℹ️ How to Order
-                            </h3>
+                            <h3 class="font-bold text-blue-700 mb-2 flex items-center text-sm sm:text-base">ℹ️ How to Order</h3>
                             <ul class="list-disc list-inside text-xs sm:text-sm space-y-1 text-blue-800">
                                 <li>Select your desired items and add to cart</li>
                                 <li>Use filter buttons to find books or question papers</li>
@@ -529,335 +176,155 @@
     </div>
 
     <script>
-        // Book Data with categories
-        const books = [
-            { id: 1, name: "ලංකා ඉතිහාසය-1-ආරමභයේ සිට අනුරාධපුර යයේ අවසානය දක්වා(භූගෝලීය සාධක, මූලාශ්‍ර, සිතියම් හා ආදර්ශ පිළිතුරු ඇතුළත්ව)", price: 1600, category: "book" },
-            { id: 2, name: "ලංකා ඉතිහාසය-2-පොළොන්නරු යුගයේ සිට කෝට්ටේ යුගය අවසානය දක්වා", price: 800, category: "book" },
-            { id: 3, name: "ලංකා ඉතිහාසය-3-මහනුවර යුගය, යටත්විජිත යුග හා නිදහසින් පසු ශ්‍රී ලංකාව", price: 1200, category: "book" },
-            { id: 4, name: "ඉන්දියා ඉතිහාසය-1-12ශ්‍රේණියට නියමිත කොටස්", price: 1300, category: "book" },
-            { id: 5, name: "ඉන්දියා ඉතිහාසය-2-13ශ්‍රේණියට නියමිත කොටස් ", price: 1100, category: "book" },
-            { id: 6, name: "යුරෝපා ඉතිහාසය-1-12 ශ්‍රේණියට නියමිත කොටස්", price: 850, category: "book" },
-            { id: 7, name: "යුරෝපා ඉතිහාසය-2- 13ශ්‍රේණියට නියමිත කොටස්", price: 800, category: "book" },
-            { id: 8, name: "ලංකා MCQ පිළිතුරු විග්‍රහය", price: 1500, category: "book" },
-            { id: 9, name: "ඉන්දියා MCQ පිළිතුරු විග්‍රහය", price: 1500, category: "book" },        
-            { id: 10, name: "යුරෝපා MCQ පිළිතුරු විග්‍රහය", price: 1500, category: "book" },
-            { id: 11, name: "ඉන්දියා අර්ථදීපනී", price: 2500, category: "book" },
-            { id: 12, name: "සා පෙළ උපකාරක පොත (ගුරු)", price: 1200, category: "book" },            
-            { id: 13, name: "සා පෙළ උපකාරක පොත (ශිෂ්‍ය)", price: 800, category: "book" },
-            { id: 14, name: "සා පෙළ ලංකා ලෝක සිතියම් පොත", price: 800, category: "book" },    
-            { id: 15, name: "සා පෙළ සිතියම් අභ්‍යාස පොත", price: 600, category: "book" },
-            { id: 16, name: "උසස් පෙළ ශ්‍රී ලංකා සිතියම් අභ්‍යාස පොත(PDF)", price: 0, category: "book" },
-            { id: 17, name: "උසස් පෙළ ඉන්දියා සිතියම් අභ්‍යාස පොත(PDF)", price: 0, category: "book" },
-            { id: 18, name: "උසස් පෙළ යුරෝපා සිතියම් අභ්‍යාස පොත(PDF)", price: 0, category: "book" },
-            { id: 19, name: "13 ශ්‍රේණිය ඉන්දියා ඉතිහාසය ප්‍රශ්නපත්‍රය(වාර විභාග සඳහා) (MCQ හා සිතියම් පිළිතුරු පත්‍රය සමග(PDF)", price: 500, category: "question" },            
+        const books=[
+            {id:1,name:"ලංකා ඉතිහාසය-1",price:1600,category:"book"},
+            {id:2,name:"ලංකා ඉතිහාසය-2",price:800,category:"book"},
+            {id:3,name:"ලංකා ඉතිහාසය-3",price:1200,category:"book"},
+            {id:4,name:"ඉන්දියා ඉතිහාසය-1",price:1300,category:"book"},
+            {id:5,name:"ඉන්දියා ඉතිහාසය-2",price:1100,category:"book"},
+            {id:6,name:"යුරෝපා ඉතිහාසය-1",price:850,category:"book"},
+            {id:7,name:"යුරෝපා ඉතිහාසය-2",price:800,category:"book"},
+            {id:8,name:"ලංකා MCQ පිළිතුරු විග්‍රහය",price:1500,category:"book"},
+            {id:9,name:"ඉන්දියා MCQ පිළිතුරු විග්‍රහය",price:1500,category:"book"},
+            {id:10,name:"යුරෝපා MCQ පිළිතුරු විග්‍රහය",price:1500,category:"book"},
+            {id:11,name:"ඉන්දියා අර්ථදීපනී",price:2500,category:"book"},
+            {id:12,name:"සා පෙළ උපකාරක පොත (ගුරු)",price:1200,category:"book"},
+            {id:13,name:"සා පෙළ උපකාරක පොත (ශිෂ්‍ය)",price:800,category:"book"},
+            {id:14,name:"සා පෙළ ලංකා ලෝක සිතියම් පොත",price:800,category:"book"},
+            {id:15,name:"සා පෙළ සිතියම් අභ්‍යාස පොත",price:600,category:"book"},
+            {id:16,name:"13 ශ්‍රේණිය ඉන්දියා ඉතිහාසය ප්‍රශ්නපත්‍ර",price:500,category:"question"},
+            {id:17,name:"සා.පෙළ සිතියම් හා අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1TLqAsfoAFxUZeBO4c2884O3_xwolRu4k/view?usp=drive_link"},
+            {id:18,name:"සා.පෙළ ස්ථාන ලකුණු කළ සිතියම් (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1SmAToN3qdjCii6z4u89VzKDozAGHni7R/view?usp=sharing"},
+            {id:19,name:"උසස් පෙළ ලංකා සිතියම් පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/10m2fa-xaWL2aIJQjoRdq0bk8BhmpGDc-/view?usp=drive_link"},
+            {id:20,name:"උසස් පෙළ ඉන්දියා සිතියම් පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1FT2urdO7m2bpJPQuDDOFn0b5O3syvO39/view?usp=drive_link"},
+            {id:21,name:"උසස් පෙළ යුරෝපා සිතියම් පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1oOZKWFV5TOfl7fTa5cbtZIuIrGSEnqly/view?usp=drive_link"},
+            {id:22,name:"උසස් පෙළ ලංකා සිතියම් අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1pqbAj8S3NtKqsh0nw8g4JglrywDkvspQ/view?usp=drive_link"},
+            {id:23,name:"උසස් පෙළ ඉන්දියා සිතියම් අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1vl66o4WI7wIYh24Xj8uZ0tymu3-FkqIp/view?usp=drive_link"},
+            {id:24,name:"උසස් පෙළ යුරෝපා සිතියම් අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/13Gz_3awRKYW7MtK6UqmELRDXOqqV52Xn/view?usp=drive_link"}
         ];
-
-        // Cart storage
-        let cart = [];
-        let currentFilter = 'all';
-
-        // Your WhatsApp number
-        const BUSINESS_WHATSAPP = "+94716637804";
-
-        // Banner error handling
-        function handleBannerError(img) {
-            img.style.display = 'none';
-            document.getElementById('bannerError').classList.remove('hidden');
-        }
-
-        function handleBannerLoad(img) {
-            img.classList.add('loaded');
-        }
-
-        // Check if device is mobile
-        function isMobileDevice() {
-            return window.innerWidth <= 640;
-        }
-
-        // Filter books based on category
-        function filterBooks(category) {
-            currentFilter = category;
-            
-            // Update button states
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            if (category === 'all') {
-                document.getElementById('filterAll').classList.add('active');
-            } else if (category === 'book') {
-                document.getElementById('filterBooks').classList.add('active');
-            } else if (category === 'question') {
-                document.getElementById('filterQuestions').classList.add('active');
-            }
-            
-            // Filter and display books
-            const filteredBooks = category === 'all' ? books : books.filter(book => book.category === category);
+        let cart=[],currentFilter='all';
+        const BUSINESS_WHATSAPP="+94716637804";
+        
+        function handleBannerError(img){img.style.display='none';document.getElementById('bannerError').classList.remove('hidden')}
+        function handleBannerLoad(img){img.classList.add('loaded')}
+        function isMobileDevice(){return window.innerWidth<=640}
+        
+        function filterBooks(category){
+            currentFilter=category;
+            document.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.remove('active'));
+            if(category==='all')document.getElementById('filterAll').classList.add('active');
+            else if(category==='book')document.getElementById('filterBooks').classList.add('active');
+            else if(category==='question')document.getElementById('filterQuestions').classList.add('active');
+            const filteredBooks=category==='all'?books:books.filter(book=>book.category===category);
             displayBooks(filteredBooks);
         }
-
-        // Display books
-        function displayBooks(booksToShow) {
-            const bookList = document.getElementById('bookList');
-            const isMobile = isMobileDevice();
-            
-            // Clear existing books
-            bookList.innerHTML = '';
-            
-            booksToShow.forEach(book => {
-                const bookDiv = document.createElement('div');
-                const categoryIcon = book.category === 'book' ? '📖' : '📝';
-                const categoryLabel = book.category === 'book' ? 'පොත' : 'ප්‍රශ්නපත්‍ර';
-                
-                bookDiv.className = `bg-white/80 rounded-lg hover-lift cursor-pointer border border-white/30 ${isMobile ? 'mobile-book-card p-3' : 'p-4'}`;
-                bookDiv.innerHTML = `
-                    <div class="text-center">
-                        <div class="${isMobile ? 'text-2xl mb-2' : 'text-3xl mb-3'}">${categoryIcon}</div>
-                                               <div class="text-xs text-purple-600 font-semibold mb-1">${categoryLabel}</div>
-                       <h3 class="font-semibold text-gray-800 mb-2 flex items-center justify-center leading-tight ${isMobile ? 'mobile-book-title text-xs' : 'text-sm'} min-h-[2.5rem]">${book.name}</h3>
-                       <div class="text-lg font-bold text-green-600 mb-3">
-                           ${book.price === 0 ? 'නොමිලේ' : `Rs. ${book.price.toLocaleString()}`}
-                       </div>
-                       <button onclick="addToCart(${book.id})" class="gradient-btn text-white px-3 py-2 rounded-lg font-semibold w-full text-xs sm:text-sm touch-target">
-                           🛒 Add to Cart
-                       </button>
-                   </div>
-               `;
-               bookList.appendChild(bookDiv);
-           });
-       }
-
-       // Add to cart function
-       function addToCart(bookId) {
-           const book = books.find(b => b.id === bookId);
-           const existingItem = cart.find(item => item.id === bookId);
-           
-           if (existingItem) {
-               existingItem.quantity += 1;
-           } else {
-               cart.push({ ...book, quantity: 1 });
-           }
-           
-           updateCartDisplay();
-           
-           // Add visual feedback
-           const button = event.target;
-           const originalText = button.innerHTML;
-           button.innerHTML = '✅ Added!';
-           button.style.background = 'linear-gradient(45deg, #10B981, #059669)';
-           
-           setTimeout(() => {
-               button.innerHTML = originalText;
-               button.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
-           }, 1000);
-       }
-
-       // Remove from cart
-       function removeFromCart(bookId) {
-           cart = cart.filter(item => item.id !== bookId);
-           updateCartDisplay();
-       }
-
-       // Update quantity
-       function updateQuantity(bookId, change) {
-           const item = cart.find(item => item.id === bookId);
-           if (item) {
-               item.quantity += change;
-               if (item.quantity <= 0) {
-                   removeFromCart(bookId);
-               } else {
-                   updateCartDisplay();
-               }
-           }
-       }
-
-       // Update cart display
-       function updateCartDisplay() {
-           const cartItemsDiv = document.getElementById('cartItems');
-           const cartItemCount = document.getElementById('cartItemCount');
-           const cartSummary = document.getElementById('cartSummary');
-           const emptyCart = document.getElementById('emptyCart');
-           
-           // Update cart count
-           const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-           cartItemCount.textContent = totalItems;
-           
-           if (cart.length === 0) {
-               cartSummary.classList.add('hidden');
-               emptyCart.classList.remove('hidden');
-               cartItemsDiv.innerHTML = '';
-               return;
-           }
-           
-           cartSummary.classList.remove('hidden');
-           emptyCart.classList.add('hidden');
-           
-           // Display cart items
-           cartItemsDiv.innerHTML = cart.map(item => `
-               <div class="bg-white/70 p-3 rounded-lg border">
-                   <div class="flex justify-between items-start mb-2">
-                       <h4 class="font-semibold text-sm text-gray-800 flex-1 mr-2">${item.name}</h4>
-                       <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-sm font-bold touch-target p-1">×</button>
-                   </div>
-                   <div class="flex justify-between items-center">
-                       <div class="flex items-center space-x-2">
-                           <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">-</button>
-                           <span class="text-sm font-semibold">${item.quantity}</span>
-                           <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">+</button>
-                       </div>
-                       <div class="text-sm font-bold text-green-600">
-                           ${item.price === 0 ? 'නොමිලේ' : `Rs. ${(item.price * item.quantity).toLocaleString()}`}
-                       </div>
-                   </div>
-               </div>
-           `).join('');
-           
-           // Calculate totals
-           const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-           const discount = subtotal * 0.10;
-           const total = subtotal - discount;
-           
-           document.getElementById('subtotalDisplay').textContent = subtotal.toLocaleString();
-           document.getElementById('discountDisplay').textContent = discount.toLocaleString();
-           document.getElementById('totalDisplay').textContent = total.toLocaleString();
-       }
-
-       // Generate order message
-       function generateOrderMessage() {
-           const orderItems = cart.map(item => 
-               `• ${item.name} - ${item.quantity} ${item.quantity > 1 ? 'copies' : 'copy'} - ${item.price === 0 ? 'නොමිලේ' : `Rs. ${(item.price * item.quantity).toLocaleString()}`}`
-           ).join('\n');
-           
-           const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-           const discount = subtotal * 0.10;
-           const total = subtotal - discount;
-           
-           return `📚 *EDUHELP BOOKSTORE ORDER*
-
-*Order Details:*
-${orderItems}
-
-*Summary:*
-Sub Total: Rs. ${subtotal.toLocaleString()}
-Discount (10%): -Rs. ${discount.toLocaleString()}
-*Total Amount: Rs. ${total.toLocaleString()}*
-
-*Contact Information:*
-Please confirm this order and provide delivery details.
-
-Thank you for choosing Eduhelp Bookstore! 🙏`;
-       }
-
-       // Place order via WhatsApp
-       function placeOrder() {
-           if (cart.length === 0) {
-               alert('Your cart is empty! Please add some items first.');
-               return;
-           }
-           
-           const message = generateOrderMessage();
-           const encodedMessage = encodeURIComponent(message);
-           const whatsappUrl = `https://wa.me/${BUSINESS_WHATSAPP.replace('+', '')}?text=${encodedMessage}`;
-           
-           window.open(whatsappUrl, '_blank');
-       }
-
-       // Copy message to clipboard
-       function copyMessage() {
-           if (cart.length === 0) {
-               alert('Your cart is empty! Please add some items first.');
-               return;
-           }
-           
-           const message = generateOrderMessage();
-           
-           if (navigator.clipboard && window.isSecureContext) {
-               navigator.clipboard.writeText(message).then(() => {
-                   showCopySuccess();
-               }).catch(() => {
-                   fallbackCopyTextToClipboard(message);
-               });
-           } else {
-               fallbackCopyTextToClipboard(message);
-           }
-       }
-
-       // Fallback copy method for older browsers
-       function fallbackCopyTextToClipboard(text) {
-           const textArea = document.createElement("textarea");
-           textArea.value = text;
-           textArea.style.top = "0";
-           textArea.style.left = "0";
-           textArea.style.position = "fixed";
-           textArea.style.opacity = "0";
-           
-           document.body.appendChild(textArea);
-           textArea.focus();
-           textArea.select();
-           
-           try {
-               document.execCommand('copy');
-               showCopySuccess();
-           } catch (err) {
-               alert('Failed to copy message. Please try again.');
-           }
-           
-           document.body.removeChild(textArea);
-       }
-
-       // Show copy success message
-       function showCopySuccess() {
-           const copyBtn = document.getElementById('copyBtn');
-           const originalText = copyBtn.innerHTML;
-           copyBtn.innerHTML = '<span class="mr-2">✅</span> Copied!';
-           copyBtn.style.background = 'linear-gradient(45deg, #10B981, #059669)';
-           
-           setTimeout(() => {
-               copyBtn.innerHTML = originalText;
-               copyBtn.style.background = 'linear-gradient(45deg, #3B82F6, #1D4ED8)';
-           }, 2000);
-       }
-
-       // Mobile menu toggle
-       function toggleMobileMenu() {
-           const mobileMenu = document.getElementById('mobileMenu');
-           mobileMenu.classList.toggle('hidden');
-       }
-
-       // Initialize the page
-       function initializePage() {
-           // Display all books initially
-           displayBooks(books);
-           
-           // Set up event listeners
-           document.getElementById('filterAll').addEventListener('click', () => filterBooks('all'));
-           document.getElementById('filterBooks').addEventListener('click', () => filterBooks('book'));
-           document.getElementById('filterQuestions').addEventListener('click', () => filterBooks('question'));
-           document.getElementById('orderBtn').addEventListener('click', placeOrder);
-           document.getElementById('copyBtn').addEventListener('click', copyMessage);
-           document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
-           
-           // Close mobile menu when clicking outside
-           document.addEventListener('click', function(event) {
-               const mobileMenu = document.getElementById('mobileMenu');
-               const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-               
-               if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
-                   mobileMenu.classList.add('hidden');
-               }
-           });
-           
-           // Handle window resize
-           window.addEventListener('resize', () => {
-               const filteredBooks = currentFilter === 'all' ? books : books.filter(book => book.category === currentFilter);
-               displayBooks(filteredBooks);
-           });
-       }
-
-       // Initialize when DOM is loaded
-       document.addEventListener('DOMContentLoaded', initializePage);
-   </script>
+        
+        function displayBooks(booksToShow){
+            const bookList=document.getElementById('bookList'),isMobile=isMobileDevice();
+            bookList.innerHTML='';
+            booksToShow.forEach(book=>{
+                const bookDiv=document.createElement('div'),categoryIcon=book.category==='book'?'📖':'📝',categoryLabel=book.category==='book'?'පොත':'ප්‍රශ්නපත්‍ර';
+                bookDiv.className=`bg-white/80 rounded-lg hover-lift cursor-pointer border border-white/30 ${isMobile?'mobile-book-card p-3':'p-4'}`;
+                bookDiv.innerHTML=`<div class="text-center"><div class="${isMobile?'text-2xl mb-2':'text-3xl mb-3'}">${categoryIcon}</div><div class="text-xs text-purple-600 font-semibold mb-1">${categoryLabel}</div><h3 class="font-semibold text-gray-800 mb-2 flex items-center justify-center leading-tight ${isMobile?'mobile-book-title text-xs':'text-sm'} min-h-[2.5rem]">${book.name}</h3><div class="text-lg font-bold text-green-600 mb-3">${book.price===0?'නොමිලේ':`Rs. ${book.price.toLocaleString()}`}</div><button onclick="addToCart(${book.id})" class="gradient-btn text-white px-3 py-2 rounded-lg font-semibold w-full text-xs sm:text-sm touch-target">${book.downloadLink?'📥 Download නොමිලේ':'🛒 Add to Cart'}</button></div>`;
+                bookList.appendChild(bookDiv);
+            });
+        }
+        
+        function addToCart(bookId){
+            const book=books.find(b=>b.id===bookId);
+            if(book.downloadLink){window.open(book.downloadLink,'_blank');return}
+            const existingItem=cart.find(item=>item.id===bookId);
+            if(existingItem)existingItem.quantity+=1;
+            else cart.push({...book,quantity:1});
+            updateCartDisplay();
+            const button=event.target,originalText=button.innerHTML;
+            button.innerHTML='✅ Added!';
+            button.style.background='linear-gradient(45deg,#10B981,#059669)';
+            setTimeout(()=>{button.innerHTML=originalText;button.style.background='linear-gradient(45deg,#667eea,#764ba2)'},1000);
+        }
+        
+        function removeFromCart(bookId){cart=cart.filter(item=>item.id!==bookId);updateCartDisplay()}
+        
+        function updateQuantity(bookId,change){
+            const item=cart.find(item=>item.id===bookId);
+            if(item){item.quantity+=change;if(item.quantity<=0)removeFromCart(bookId);else updateCartDisplay()}
+        }
+        
+        function updateCartDisplay(){
+            const cartItemsDiv=document.getElementById('cartItems'),cartItemCount=document.getElementById('cartItemCount'),cartSummary=document.getElementById('cartSummary'),emptyCart=document.getElementById('emptyCart');
+            const totalItems=cart.reduce((sum,item)=>sum+item.quantity,0);
+            cartItemCount.textContent=totalItems;
+            if(cart.length===0){cartSummary.classList.add('hidden');emptyCart.classList.remove('hidden');cartItemsDiv.innerHTML='';return}
+            cartSummary.classList.remove('hidden');emptyCart.classList.add('hidden');
+            cartItemsDiv.innerHTML=cart.map(item=>`<div class="bg-white/70 p-3 rounded-lg border"><div class="flex justify-between items-start mb-2"><h4 class="font-semibold text-sm text-gray-800 flex-1 mr-2">${item.name}</h4><button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-sm font-bold touch-target p-1">×</button></div><div class="flex justify-between items-center"><div class="flex items-center space-x-2"><button onclick="updateQuantity(${item.id},-1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">-</button><span class="text-sm font-semibold">${item.quantity}</span><button onclick="updateQuantity(${item.id},1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">+</button></div><div class="text-sm font-bold text-green-600">${item.price===0?'නොමිලේ':`Rs. ${(item.price*item.quantity).toLocaleString()}`}</div></div></div>`).join('');
+            const subtotal=cart.reduce((sum,item)=>sum+(item.price*item.quantity),0),discount=subtotal*0.10,total=subtotal-discount;
+            document.getElementById('subtotalDisplay').textContent=subtotal.toLocaleString();
+            document.getElementById('discountDisplay').textContent=discount.toLocaleString();
+            document.getElementById('totalDisplay').textContent=total.toLocaleString();
+        }
+        
+        function generateOrderMessage(){
+            const orderItems=cart.map(item=>`• ${item.name} - ${item.quantity} ${item.quantity>1?'copies':'copy'} - ${item.price===0?'නොමිලේ':`Rs. ${(item.price*item.quantity).toLocaleString()}`}`).join('\n');
+            const subtotal=cart.reduce((sum,item)=>sum+(item.price*item.quantity),0),discount=subtotal*0.10,total=subtotal-discount;
+            return`📚 *EDUHELP BOOKSTORE ORDER*\n\n*Order Details:*\n${orderItems}\n\n*Summary:*\nSub Total: Rs. ${subtotal.toLocaleString()}\nDiscount (10%): -Rs. ${discount.toLocaleString()}\n*Total Amount: Rs. ${total.toLocaleString()}*\n\n*Contact Information:*\nPlease confirm this order and provide delivery details.\n\nThank you for choosing Eduhelp Bookstore! 🙏`;
+        }
+        
+        function placeOrder(){
+            if(cart.length===0){alert('Your cart is empty! Please add some items first.');return}
+            const message=generateOrderMessage(),encodedMessage=encodeURIComponent(message),whatsappUrl=`https://wa.me/${BUSINESS_WHATSAPP.replace('+','')}?text=${encodedMessage}`;
+            window.open(whatsappUrl,'_blank');
+        }
+        
+        function copyMessage(){
+            if(cart.length===0){alert('Your cart is empty! Please add some items first.');return}
+            const message=generateOrderMessage();
+            if(navigator.clipboard&&window.isSecureContext){
+                navigator.clipboard.writeText(message).then(()=>showCopySuccess()).catch(()=>fallbackCopyTextToClipboard(message));
+            }else fallbackCopyTextToClipboard(message);
+        }
+        
+        function fallbackCopyTextToClipboard(text){
+            const textArea=document.createElement("textarea");
+            textArea.value=text;
+            textArea.style.top="0";
+            textArea.style.left="0";
+            textArea.style.position="fixed";
+            textArea.style.opacity="0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try{document.execCommand('copy');showCopySuccess()}catch(err){alert('Failed to copy message. Please try again.')}
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopySuccess(){
+            const copyBtn=document.getElementById('copyBtn'),originalText=copyBtn.innerHTML;
+            copyBtn.innerHTML='<span class="mr-2">✅</span> Copied!';
+            copyBtn.style.background='linear-gradient(45deg,#10B981,#059669)';
+            setTimeout(()=>{copyBtn.innerHTML=originalText;copyBtn.style.background='linear-gradient(45deg,#3B82F6,#1D4ED8)'},2000);
+        }
+        
+        function toggleMobileMenu(){document.getElementById('mobileMenu').classList.toggle('hidden')}
+        
+        function initializePage(){
+            displayBooks(books);
+            document.getElementById('filterAll').addEventListener('click',()=>filterBooks('all'));
+            document.getElementById('filterBooks').addEventListener('click',()=>filterBooks('book'));
+            document.getElementById('filterQuestions').addEventListener('click',()=>filterBooks('question'));
+            document.getElementById('orderBtn').addEventListener('click',placeOrder);
+            document.getElementById('copyBtn').addEventListener('click',copyMessage);
+            document.getElementById('mobileMenuBtn').addEventListener('click',toggleMobileMenu);
+            document.addEventListener('click',function(event){
+                const mobileMenu=document.getElementById('mobileMenu'),mobileMenuBtn=document.getElementById('mobileMenuBtn');
+                if(!mobileMenu.contains(event.target)&&!mobileMenuBtn.contains(event.target))mobileMenu.classList.add('hidden');
+            });
+            window.addEventListener('resize',()=>{
+                const filteredBooks=currentFilter==='all'?books:books.filter(book=>book.category===currentFilter);
+                displayBooks(filteredBooks);
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded',initializePage);
+    </script>
 </body>
 </html>
-
-
