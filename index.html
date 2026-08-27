@@ -5,30 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eduhelp Bookstore</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@500;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
-        .main-content{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
-        .glass-morphism{background:rgba(255,255,255,0.25);backdrop-filter:blur(10px);border-radius:20px;border:1px solid rgba(255,255,255,0.18)}
-        .hover-lift{transition:all 0.3s ease}
-        .hover-lift:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,0,0,0.15)}
-        .gradient-btn{background:linear-gradient(45deg,#667eea,#764ba2);transition:all 0.3s ease}
-        .gradient-btn:hover{background:linear-gradient(45deg,#764ba2,#667eea);transform:scale(1.05)}
-        .filter-btn{background:linear-gradient(45deg,#6366F1,#8B5CF6);transition:all 0.3s ease}
-        .filter-btn:hover{background:linear-gradient(45deg,#8B5CF6,#6366F1);transform:scale(1.05)}
-        .filter-btn.active{background:linear-gradient(45deg,#10B981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.4)}
-        .cart-animation{animation:pulse 2s infinite}
-        @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-        .order-btn{background:linear-gradient(45deg,#10B981,#059669);transition:all 0.3s ease}
-        .order-btn:hover{background:linear-gradient(45deg,#059669,#10B981);transform:scale(1.05)}
-        .copy-btn{background:linear-gradient(45deg,#3B82F6,#1D4ED8);transition:all 0.3s ease}
-        .copy-btn:hover{background:linear-gradient(45deg,#1D4ED8,#3B82F6);transform:scale(1.05)}
-        .nav-link{position:relative;overflow:hidden}
-        .nav-link::after{content:'';position:absolute;bottom:0;left:-100%;width:100%;height:2px;background:linear-gradient(45deg,#10B981,#059669);transition:left 0.3s ease}
-        .nav-link:hover::after{left:0}
-        .banner-container{position:relative;overflow:hidden;background:white;padding:0.5rem 0;width:100%}
-        .banner-image{width:100%;height:auto;object-fit:contain;object-position:center;display:none;transition:all 0.3s ease;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-height:250px;min-height:150px}
+        :root{
+            --paper:#FAF8F3;
+            --paper-alt:#F2EEE4;
+            --card:#FFFFFF;
+            --ink:#2B2A26;
+            --ink-soft:#6B675C;
+            --border:#E4DFCF;
+            --teal:#33645A;
+            --teal-dark:#254A42;
+            --teal-tint:#E9F1EE;
+            --gold:#A9803F;
+            --gold-tint:#F6EEDD;
+            --danger:#B4483F;
+        }
+        *{box-sizing:border-box}
+        body{
+            font-family:'Noto Sans Sinhala','Inter',sans-serif;
+            background:var(--paper);
+            color:var(--ink);
+        }
+        h1,h2,h3,.serif{font-family:'Noto Serif Sinhala','Noto Sans Sinhala',serif}
+
+        /* card & surface treatment: flat, hairline border, quiet shadow — "index card" feel */
+        .surface{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:10px;
+        }
+        .hover-lift{transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+        .hover-lift:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(43,42,38,0.08);border-color:var(--teal)}
+
+        .btn-primary{background:var(--teal);color:#fff;transition:background .18s ease}
+        .btn-primary:hover{background:var(--teal-dark)}
+        .btn-outline{background:transparent;color:var(--teal);border:1px solid var(--teal);transition:all .18s ease}
+        .btn-outline:hover{background:var(--teal);color:#fff}
+
+        .filter-btn{background:var(--card);color:var(--ink-soft);border:1px solid var(--border);transition:all .18s ease}
+        .filter-btn:hover{border-color:var(--teal);color:var(--teal)}
+        .filter-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+        .order-btn{background:var(--teal);transition:background .18s ease}
+        .order-btn:hover{background:var(--teal-dark)}
+        .copy-btn{background:transparent;color:var(--teal);border:1px solid var(--teal);transition:all .18s ease}
+        .copy-btn:hover{background:var(--teal-tint)}
+
+        .cart-count{background:var(--gold);color:#fff}
+
+        .nav-link{position:relative;color:var(--ink-soft)}
+        .nav-link:hover{color:var(--teal)}
+        .nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--teal);transition:width .2s ease}
+        .nav-link:hover::after{width:100%}
+
+        /* signature: a small perforated "ticket stub" tab at the top of each item card, like a library catalog card */
+        .catalog-card{position:relative;padding-top:1.5rem}
+        .catalog-card::before{
+            content:'';
+            position:absolute;top:0;left:50%;transform:translateX(-50%);
+            width:28px;height:6px;border-radius:0 0 6px 6px;
+            background:var(--gold-tint);border:1px solid var(--border);border-top:none;
+        }
+        .price-tag{color:var(--teal-dark);font-weight:700}
+        .free-tag{color:var(--gold)}
+
+        .banner-container{position:relative;overflow:hidden;background:var(--paper-alt);padding:0.5rem 0;width:100%;border-bottom:1px solid var(--border)}
+        .banner-image{width:100%;height:auto;object-fit:contain;object-position:center;display:none;transition:all 0.3s ease;border-radius:6px;max-height:250px;min-height:150px}
         .banner-image.loaded{display:block}
-        .banner-image-error{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:bold;text-align:center;padding:2rem;border-radius:8px;height:180px}
+        .banner-image-error{background:var(--teal-tint);color:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:bold;text-align:center;padding:2rem;border-radius:6px;height:180px;border:1px solid var(--border)}
+
         @media(max-width:640px){
             .banner-container{padding:0.25rem}
             .banner-image{max-height:180px;min-height:120px;border-radius:4px}
@@ -50,43 +98,45 @@
         @media(min-width:769px){.banner-image{max-height:280px}}
         @media(max-width:1024px){.nav-scroll{max-height:50vh;overflow-y:auto}}
         @media(prefers-reduced-motion:no-preference){.smooth-scroll{scroll-behavior:smooth}}
+        ::-webkit-scrollbar{width:8px;height:8px}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
     </style>
 </head>
 <body class="min-h-screen smooth-scroll">
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b" style="border-color:var(--border)">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-2 sm:py-3">
                 <div class="flex items-center">
                     <img src="https://www.eduhelp.lk/wp-content/uploads/2025/05/EduhelpLogo_2023-01.jpg" alt="Eduhelp Logo" class="h-8 sm:h-12 mr-2 sm:mr-3" onerror="this.style.display='none'">
                 </div>
                 <div class="hidden lg:flex space-x-4 xl:space-x-6">
-                    <a href="https://www.eduhelp.lk/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">මුල පිටුව</a>
-                    <a href="https://www.eduhelp.lk/index.php/news/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">පුවත්</a>
-                    <a href="https://www.eduhelp.lk/index.php/educational-services/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">අධ්‍යාපන සේවා</a>
-                    <a href="https://www.eduhelp.lk/index.php/encyclopedia/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">විශ්වකෝෂය</a>
-                    <a href="https://www.eduhelp.lk/index.php/image-bank/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">පින්තූර</a>
-                    <a href="https://www.eduhelp.lk/index.php/library/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">පුස්තකාලය</a>
-                    <a href="https://www.eduhelp.lk/index.php/universal-index/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">විශ්ව සුචිය</a>
-                    <a href="https://www.eduhelp.lk/index.php/contact/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">විමසීම්</a>
-                    <a href="https://www.eduhelp.lk/index.php/events/" class="nav-link text-gray-700 hover:text-green-600 transition-colors px-2 py-2 text-sm xl:text-base">විශේෂ අවස්ථා</a>
+                    <a href="https://www.eduhelp.lk/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">මුල පිටුව</a>
+                    <a href="https://www.eduhelp.lk/index.php/news/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">පුවත්</a>
+                    <a href="https://www.eduhelp.lk/index.php/educational-services/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">අධ්‍යාපන සේවා</a>
+                    <a href="https://www.eduhelp.lk/index.php/encyclopedia/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">විශ්වකෝෂය</a>
+                    <a href="https://www.eduhelp.lk/index.php/image-bank/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">පින්තූර</a>
+                    <a href="https://www.eduhelp.lk/index.php/library/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">පුස්තකාලය</a>
+                    <a href="https://www.eduhelp.lk/index.php/universal-index/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">විශ්ව සුචිය</a>
+                    <a href="https://www.eduhelp.lk/index.php/contact/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">විමසීම්</a>
+                    <a href="https://www.eduhelp.lk/index.php/events/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">විශේෂ අවස්ථා</a>
                 </div>
                 <div class="lg:hidden">
-                    <button id="mobileMenuBtn" class="text-gray-700 hover:text-green-600 focus:outline-none touch-target p-2">
+                    <button id="mobileMenuBtn" class="focus:outline-none touch-target p-2" style="color:var(--ink-soft)">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
             </div>
-            <div id="mobileMenu" class="hidden lg:hidden pb-4 border-t border-gray-200">
+            <div id="mobileMenu" class="hidden lg:hidden pb-4 border-t" style="border-color:var(--border)">
                 <div class="nav-scroll flex flex-col space-y-1 pt-4">
-                    <a href="https://www.eduhelp.lk/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">මුල පිටුව</a>
-                    <a href="https://www.eduhelp.lk/index.php/news/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">පුවත්</a>
-                    <a href="https://www.eduhelp.lk/index.php/educational-services/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">අධ්‍යාපන සේවා</a>
-                    <a href="https://www.eduhelp.lk/index.php/encyclopedia/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">විශ්වකෝෂය</a>
-                    <a href="https://www.eduhelp.lk/index.php/image-bank/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">පින්තූර</a>
-                    <a href="https://www.eduhelp.lk/index.php/library/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">පුස්තකාලය</a>
-                    <a href="https://www.eduhelp.lk/index.php/universal-index/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">විශ්ව සුචිය</a>
-                    <a href="https://www.eduhelp.lk/index.php/contact/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">විමසීම්</a>
-                    <a href="https://www.eduhelp.lk/index.php/events/" class="text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors py-3 px-4 rounded touch-target">විශේෂ අවස්ථා</a>
+                    <a href="https://www.eduhelp.lk/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">මුල පිටුව</a>
+                    <a href="https://www.eduhelp.lk/index.php/news/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">පුවත්</a>
+                    <a href="https://www.eduhelp.lk/index.php/educational-services/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">අධ්‍යාපන සේවා</a>
+                    <a href="https://www.eduhelp.lk/index.php/encyclopedia/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">විශ්වකෝෂය</a>
+                    <a href="https://www.eduhelp.lk/index.php/image-bank/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">පින්තූර</a>
+                    <a href="https://www.eduhelp.lk/index.php/library/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">පුස්තකාලය</a>
+                    <a href="https://www.eduhelp.lk/index.php/universal-index/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">විශ්ව සුචිය</a>
+                    <a href="https://www.eduhelp.lk/index.php/contact/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">විමසීම්</a>
+                    <a href="https://www.eduhelp.lk/index.php/events/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">විශේෂ අවස්ථා</a>
                 </div>
             </div>
         </div>
@@ -99,22 +149,22 @@
         </div>
     </div>
 
-    <div class="main-content min-h-screen">
+    <div class="min-h-screen">
         <div class="container mx-auto mobile-padding p-4 sm:p-6 max-w-6xl">
             <div class="text-center mb-6 sm:mb-8 pt-4 sm:pt-8">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 drop-shadow-lg mobile-text">📚 EDUHELP BOOKSTORE</h1>
-                <p class="text-white/80 text-sm sm:text-base lg:text-lg">Your Ultimate Learning Resource Center</p>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 mobile-text" style="color:var(--teal-dark)">📚 EDUHELP BOOKSTORE</h1>
+                <p class="text-sm sm:text-base lg:text-lg" style="color:var(--ink-soft)">Your Ultimate Learning Resource Center</p>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mobile-grid">
                 <div class="lg:col-span-2 order-2 lg:order-1">
-                    <div class="glass-morphism p-4 sm:p-6">
+                    <div class="surface p-4 sm:p-6">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">📚 Available Items</h2>
+                            <h2 class="text-xl sm:text-2xl font-bold flex items-center">📚 Available Items</h2>
                             <div class="flex gap-2 mobile-filter-buttons">
-                                <button id="filterAll" class="filter-btn active text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">සියල්ල</button>
-                                <button id="filterBooks" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">📖 පොත්</button>
-                                <button id="filterQuestions" class="filter-btn text-white px-4 py-2 rounded-lg font-semibold text-sm touch-target">📝 ප්‍රශ්නපත්‍ර</button>
+                                <button id="filterAll" class="filter-btn active px-4 py-2 rounded-lg font-semibold text-sm touch-target">සියල්ල</button>
+                                <button id="filterBooks" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm touch-target">📖 පොත්</button>
+                                <button id="filterQuestions" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm touch-target">📝 ප්‍රශ්නපත්‍ර</button>
                             </div>
                         </div>
                         <div id="bookList" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mobile-book-grid tablet-book-grid"></div>
@@ -122,22 +172,22 @@
                 </div>
 
                 <div class="lg:col-span-1 order-1 lg:order-2">
-                    <div class="glass-morphism p-4 sm:p-6 sticky top-20 sm:top-24 mobile-cart-sticky">
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 flex items-center">🛒 Shopping Cart <span id="cartItemCount" class="ml-2 bg-red-500 text-white rounded-full px-2 sm:px-3 py-1 text-sm cart-animation">0</span></h2>
+                    <div class="surface p-4 sm:p-6 sticky top-20 sm:top-24 mobile-cart-sticky">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">🛒 Shopping Cart <span id="cartItemCount" class="cart-count ml-2 rounded-full px-2 sm:px-3 py-1 text-sm">0</span></h2>
                         <div id="cartItems" class="max-h-48 sm:max-h-64 overflow-y-auto mb-4 space-y-2"></div>
                         <div id="cartSummary" class="hidden">
-                            <div class="bg-white/50 p-3 sm:p-4 rounded-lg space-y-2 mb-4 text-sm sm:text-base">
+                            <div class="p-3 sm:p-4 rounded-lg space-y-2 mb-4 text-sm sm:text-base" style="background:var(--paper-alt);border:1px solid var(--border)">
                                 <div class="flex justify-between"><span>Sub Total:</span><span class="font-semibold">Rs.<span id="subtotalDisplay">0.00</span></span></div>
-                                <div class="flex justify-between text-green-600"><span>Discount (10%):</span><span class="font-semibold">-Rs.<span id="discountDisplay">0.00</span></span></div>
-                                <hr class="my-2">
-                                <div class="flex justify-between text-lg sm:text-xl font-bold text-gray-800"><span>Total Amount:</span><span>Rs.<span id="totalDisplay">0.00</span></span></div>
+                                <div class="flex justify-between" style="color:var(--teal-dark)"><span>Discount (10%):</span><span class="font-semibold">-Rs.<span id="discountDisplay">0.00</span></span></div>
+                                <hr style="border-color:var(--border)" class="my-2">
+                                <div class="flex justify-between text-lg sm:text-xl font-bold"><span>Total Amount:</span><span>Rs.<span id="totalDisplay">0.00</span></span></div>
                             </div>
                             <div class="space-y-3">
                                 <button id="orderBtn" class="w-full order-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target"><span class="mr-2">📱</span>Place Order via WhatsApp</button>
-                                <button id="copyBtn" class="w-full copy-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target"><span class="mr-2">📋</span>Copy and Send Message</button>
+                                <button id="copyBtn" class="w-full copy-btn px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target"><span class="mr-2">📋</span>Copy and Send Message</button>
                             </div>
                         </div>
-                        <div id="emptyCart" class="text-center text-gray-500 py-6 sm:py-8">
+                        <div id="emptyCart" class="text-center py-6 sm:py-8" style="color:var(--ink-soft)">
                             <div class="text-3xl sm:text-4xl mb-2">🛒</div>
                             <p class="text-sm sm:text-base">Your cart is empty</p>
                             <p class="text-xs sm:text-sm">Add some items to get started!</p>
@@ -147,20 +197,20 @@
             </div>
 
             <div class="mt-6 sm:mt-8">
-                <div class="glass-morphism p-4 sm:p-6">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 flex items-center">📞 Contact Information</h2>
+                <div class="surface p-4 sm:p-6">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center">📞 Contact Information</h2>
                     <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mobile-contact-grid">
-                        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
-                            <h3 class="font-bold text-green-700 mb-2 flex items-center text-sm sm:text-base">📱 Get in Touch</h3>
-                            <div class="space-y-2 text-xs sm:text-sm text-green-800">
-                                <p><strong>WhatsApp:</strong> <a href="https://wa.me/+94716637804" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-semibold break-all">+94 716637804</a></p>
-                                <p><strong>Phone:</strong> <a href="tel:+94701551279" class="text-blue-600 hover:text-blue-800 underline font-semibold">0701551279</a></p>
-                                <p><strong>Email:</strong> <a href="mailto:urc.eduhelp@gmail.com" class="text-blue-600 hover:text-blue-800 underline font-semibold break-all">urc.eduhelp@gmail.com</a></p>
+                        <div class="p-4 rounded-lg border-l-4" style="background:var(--teal-tint);border-color:var(--teal)">
+                            <h3 class="font-bold mb-2 flex items-center text-sm sm:text-base" style="color:var(--teal-dark)">📱 Get in Touch</h3>
+                            <div class="space-y-2 text-xs sm:text-sm" style="color:var(--ink)">
+                                <p><strong>WhatsApp:</strong> <a href="https://wa.me/+94716637804" target="_blank" class="underline font-semibold break-all" style="color:var(--teal-dark)">+94 716637804</a></p>
+                                <p><strong>Phone:</strong> <a href="tel:+94701551279" class="underline font-semibold" style="color:var(--teal-dark)">0701551279</a></p>
+                                <p><strong>Email:</strong> <a href="mailto:urc.eduhelp@gmail.com" class="underline font-semibold break-all" style="color:var(--teal-dark)">urc.eduhelp@gmail.com</a></p>
                             </div>
                         </div>
-                        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
-                            <h3 class="font-bold text-blue-700 mb-2 flex items-center text-sm sm:text-base">ℹ️ How to Order</h3>
-                            <ul class="list-disc list-inside text-xs sm:text-sm space-y-1 text-blue-800">
+                        <div class="p-4 rounded-lg border-l-4" style="background:var(--gold-tint);border-color:var(--gold)">
+                            <h3 class="font-bold mb-2 flex items-center text-sm sm:text-base" style="color:var(--gold)">ℹ️ How to Order</h3>
+                            <ul class="list-disc list-inside text-xs sm:text-sm space-y-1" style="color:var(--ink)">
                                 <li>Select your desired items and add to cart</li>
                                 <li>Use filter buttons to find books or question papers</li>
                                 <li>Review your order and click "Place Order"</li>
@@ -180,6 +230,7 @@
             {id:1,name:"ලංකා ඉතිහාසය-1",price:1600,category:"book"},
             {id:2,name:"ලංකා ඉතිහාසය-2",price:800,category:"book"},
             {id:3,name:"ලංකා ඉතිහාසය-3",price:1200,category:"book"},
+            {id:8,name:"ලංකා ඉතිහාස සාරය(උසස් පෙළ ලංකා සම්පූර්ණ කෙටි සටහන් පොත)",price:1400,category:"book"},
             {id:4,name:"ඉන්දියා ඉතිහාසය-1",price:1300,category:"book"},
             {id:5,name:"ඉන්දියා ඉතිහාසය-2",price:1100,category:"book"},
             {id:6,name:"යුරෝපා ඉතිහාසය-1",price:850,category:"book"},
@@ -225,8 +276,8 @@
             bookList.innerHTML='';
             booksToShow.forEach(book=>{
                 const bookDiv=document.createElement('div'),categoryIcon=book.category==='book'?'📖':'📝',categoryLabel=book.category==='book'?'පොත':'ප්‍රශ්නපත්‍ර';
-                bookDiv.className=`bg-white/80 rounded-lg hover-lift cursor-pointer border border-white/30 ${isMobile?'mobile-book-card p-3':'p-4'}`;
-                bookDiv.innerHTML=`<div class="text-center"><div class="${isMobile?'text-2xl mb-2':'text-3xl mb-3'}">${categoryIcon}</div><div class="text-xs text-purple-600 font-semibold mb-1">${categoryLabel}</div><h3 class="font-semibold text-gray-800 mb-2 flex items-center justify-center leading-tight ${isMobile?'mobile-book-title text-xs':'text-sm'} min-h-[2.5rem]">${book.name}</h3><div class="text-lg font-bold text-green-600 mb-3">${book.price===0?'නොමිලේ':`Rs. ${book.price.toLocaleString()}`}</div><button onclick="addToCart(${book.id})" class="gradient-btn text-white px-3 py-2 rounded-lg font-semibold w-full text-xs sm:text-sm touch-target">${book.downloadLink?'📥 Download නොමිලේ':'🛒 Add to Cart'}</button></div>`;
+                bookDiv.className=`surface hover-lift catalog-card cursor-pointer ${isMobile?'mobile-book-card p-3':'p-4'}`;
+                bookDiv.innerHTML=`<div class="text-center"><div class="${isMobile?'text-2xl mb-2':'text-3xl mb-3'}">${categoryIcon}</div><div class="text-xs font-semibold mb-1" style="color:var(--gold)">${categoryLabel}</div><h3 class="font-semibold mb-2 flex items-center justify-center leading-tight ${isMobile?'mobile-book-title text-xs':'text-sm'} min-h-[2.5rem]">${book.name}</h3><div class="text-lg mb-3 ${book.price===0?'free-tag':'price-tag'}">${book.price===0?'නොමිලේ':`Rs. ${book.price.toLocaleString()}`}</div><button onclick="addToCart(${book.id})" class="btn-primary text-white px-3 py-2 rounded-lg font-semibold w-full text-xs sm:text-sm touch-target">${book.downloadLink?'📥 Download නොමිලේ':'🛒 Add to Cart'}</button></div>`;
                 bookList.appendChild(bookDiv);
             });
         }
@@ -240,8 +291,8 @@
             updateCartDisplay();
             const button=event.target,originalText=button.innerHTML;
             button.innerHTML='✅ Added!';
-            button.style.background='linear-gradient(45deg,#10B981,#059669)';
-            setTimeout(()=>{button.innerHTML=originalText;button.style.background='linear-gradient(45deg,#667eea,#764ba2)'},1000);
+            button.style.background='#254A42';
+            setTimeout(()=>{button.innerHTML=originalText;button.style.background=''},1000);
         }
         
         function removeFromCart(bookId){cart=cart.filter(item=>item.id!==bookId);updateCartDisplay()}
@@ -257,7 +308,7 @@
             cartItemCount.textContent=totalItems;
             if(cart.length===0){cartSummary.classList.add('hidden');emptyCart.classList.remove('hidden');cartItemsDiv.innerHTML='';return}
             cartSummary.classList.remove('hidden');emptyCart.classList.add('hidden');
-            cartItemsDiv.innerHTML=cart.map(item=>`<div class="bg-white/70 p-3 rounded-lg border"><div class="flex justify-between items-start mb-2"><h4 class="font-semibold text-sm text-gray-800 flex-1 mr-2">${item.name}</h4><button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-sm font-bold touch-target p-1">×</button></div><div class="flex justify-between items-center"><div class="flex items-center space-x-2"><button onclick="updateQuantity(${item.id},-1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">-</button><span class="text-sm font-semibold">${item.quantity}</span><button onclick="updateQuantity(${item.id},1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs font-bold touch-target">+</button></div><div class="text-sm font-bold text-green-600">${item.price===0?'නොමිලේ':`Rs. ${(item.price*item.quantity).toLocaleString()}`}</div></div></div>`).join('');
+            cartItemsDiv.innerHTML=cart.map(item=>`<div class="p-3 rounded-lg" style="background:var(--paper-alt);border:1px solid var(--border)"><div class="flex justify-between items-start mb-2"><h4 class="font-semibold text-sm flex-1 mr-2">${item.name}</h4><button onclick="removeFromCart(${item.id})" class="text-sm font-bold touch-target p-1" style="color:var(--danger)">×</button></div><div class="flex justify-between items-center"><div class="flex items-center space-x-2"><button onclick="updateQuantity(${item.id},-1)" class="rounded px-2 py-1 text-xs font-bold touch-target" style="background:var(--border);color:var(--ink)">-</button><span class="text-sm font-semibold">${item.quantity}</span><button onclick="updateQuantity(${item.id},1)" class="rounded px-2 py-1 text-xs font-bold touch-target" style="background:var(--border);color:var(--ink)">+</button></div><div class="text-sm font-bold" style="color:var(--teal-dark)">${item.price===0?'නොමිලේ':`Rs. ${(item.price*item.quantity).toLocaleString()}`}</div></div></div>`).join('');
             const subtotal=cart.reduce((sum,item)=>sum+(item.price*item.quantity),0),discount=subtotal*0.10,total=subtotal-discount;
             document.getElementById('subtotalDisplay').textContent=subtotal.toLocaleString();
             document.getElementById('discountDisplay').textContent=discount.toLocaleString();
@@ -301,8 +352,9 @@
         function showCopySuccess(){
             const copyBtn=document.getElementById('copyBtn'),originalText=copyBtn.innerHTML;
             copyBtn.innerHTML='<span class="mr-2">✅</span> Copied!';
-            copyBtn.style.background='linear-gradient(45deg,#10B981,#059669)';
-            setTimeout(()=>{copyBtn.innerHTML=originalText;copyBtn.style.background='linear-gradient(45deg,#3B82F6,#1D4ED8)'},2000);
+            copyBtn.style.background='#33645A';
+            copyBtn.style.color='#fff';
+            setTimeout(()=>{copyBtn.innerHTML=originalText;copyBtn.style.background='';copyBtn.style.color=''},2000);
         }
         
         function toggleMobileMenu(){document.getElementById('mobileMenu').classList.toggle('hidden')}
