@@ -1,379 +1,177 @@
 <!DOCTYPE html>
 <html lang="si">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eduhelp Bookstore</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@500;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root{
-            --paper:#FAF8F3;
-            --paper-alt:#F2EEE4;
-            --card:#FFFFFF;
-            --ink:#2B2A26;
-            --ink-soft:#6B675C;
-            --border:#E4DFCF;
-            --teal:#33645A;
-            --teal-dark:#254A42;
-            --teal-tint:#E9F1EE;
-            --gold:#A9803F;
-            --gold-tint:#F6EEDD;
-            --danger:#B4483F;
-        }
-        *{box-sizing:border-box}
-        body{
-            font-family:'Noto Sans Sinhala','Inter',sans-serif;
-            background:var(--paper);
-            color:var(--ink);
-        }
-        h1,h2,h3,.serif{font-family:'Noto Serif Sinhala','Noto Sans Sinhala',serif}
-
-        /* card & surface treatment: flat, hairline border, quiet shadow — "index card" feel */
-        .surface{
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:10px;
-        }
-        .hover-lift{transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
-        .hover-lift:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(43,42,38,0.08);border-color:var(--teal)}
-
-        .btn-primary{background:var(--teal);color:#fff;transition:background .18s ease}
-        .btn-primary:hover{background:var(--teal-dark)}
-        .btn-outline{background:transparent;color:var(--teal);border:1px solid var(--teal);transition:all .18s ease}
-        .btn-outline:hover{background:var(--teal);color:#fff}
-
-        .filter-btn{background:var(--card);color:var(--ink-soft);border:1px solid var(--border);transition:all .18s ease}
-        .filter-btn:hover{border-color:var(--teal);color:var(--teal)}
-        .filter-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
-
-        .order-btn{background:var(--teal);transition:background .18s ease}
-        .order-btn:hover{background:var(--teal-dark)}
-        .copy-btn{background:transparent;color:var(--teal);border:1px solid var(--teal);transition:all .18s ease}
-        .copy-btn:hover{background:var(--teal-tint)}
-
-        .cart-count{background:var(--gold);color:#fff}
-
-        .nav-link{position:relative;color:var(--ink-soft)}
-        .nav-link:hover{color:var(--teal)}
-        .nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--teal);transition:width .2s ease}
-        .nav-link:hover::after{width:100%}
-
-        /* signature: a small perforated "ticket stub" tab at the top of each item card, like a library catalog card */
-        .catalog-card{position:relative;padding-top:1.5rem}
-        .catalog-card::before{
-            content:'';
-            position:absolute;top:0;left:50%;transform:translateX(-50%);
-            width:28px;height:6px;border-radius:0 0 6px 6px;
-            background:var(--gold-tint);border:1px solid var(--border);border-top:none;
-        }
-        .price-tag{color:var(--teal-dark);font-weight:700}
-        .free-tag{color:var(--gold)}
-
-        .banner-container{position:relative;overflow:hidden;background:var(--paper-alt);padding:0.5rem 0;width:100%;border-bottom:1px solid var(--border)}
-        .banner-image{width:100%;height:auto;object-fit:contain;object-position:center;display:none;transition:all 0.3s ease;border-radius:6px;max-height:250px;min-height:150px}
-        .banner-image.loaded{display:block}
-        .banner-image-error{background:var(--teal-tint);color:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:bold;text-align:center;padding:2rem;border-radius:6px;height:180px;border:1px solid var(--border)}
-
-        @media(max-width:640px){
-            .banner-container{padding:0.25rem}
-            .banner-image{max-height:180px;min-height:120px;border-radius:4px}
-            .mobile-padding{padding-left:1rem;padding-right:1rem}
-            .mobile-text{font-size:1.5rem}
-            .mobile-grid{grid-template-columns:1fr;gap:1rem}
-            .mobile-book-grid{grid-template-columns:repeat(2,1fr);gap:0.5rem}
-            .mobile-book-card{padding:0.75rem}
-            .mobile-book-title{font-size:0.75rem;line-height:1.1;min-height:2.5rem}
-            .mobile-cart-sticky{position:relative;top:auto}
-            .mobile-filter-buttons{flex-direction:column;gap:0.5rem}
-            .touch-target{min-height:44px;min-width:44px}
-            .mobile-contact-grid{grid-template-columns:1fr;gap:1rem}
-        }
-        @media(min-width:641px)and (max-width:768px){
-            .banner-image{max-height:200px}
-            .tablet-book-grid{grid-template-columns:repeat(2,1fr);gap:0.75rem}
-        }
-        @media(min-width:769px){.banner-image{max-height:280px}}
-        @media(max-width:1024px){.nav-scroll{max-height:50vh;overflow-y:auto}}
-        @media(prefers-reduced-motion:no-preference){.smooth-scroll{scroll-behavior:smooth}}
-        ::-webkit-scrollbar{width:8px;height:8px}
-        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EDUHELP BOOK STORE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;800&family=Oswald:wght@500;700&display=swap">
+<style>
+:root{--g:#1f9d43;--g2:#137a31;--bg:#fff;--tx:#111;--mu:#555;--card:#fff;--bd:#1f9d43;--ad:#c9cbcf;--tab:#151515;--tabtx:#c8f000;--inv:#f6f8f6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101412;--tx:#eef2ee;--mu:#a8b2a8;--card:#171d19;--ad:#2a2f2c;--tab:#000;--inv:#171d19}}
+:root[data-theme="dark"]{--bg:#101412;--tx:#eef2ee;--mu:#a8b2a8;--card:#171d19;--ad:#2a2f2c;--tab:#000;--inv:#171d19}
+html{scroll-padding-top:calc(60px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans Sinhala",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--g);border-bottom:6px solid var(--g2);padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));display:flex;justify-content:space-between;align-items:center;gap:8px}
+h1{margin:0;font:700 clamp(22px,5vw,38px) Oswald,sans-serif;color:#fff;letter-spacing:.5px}
+.cartbtn{border:0;background:#b6f000;color:#123;font:600 14px "Noto Sans Sinhala";padding:7px 16px;border-radius:20px;cursor:pointer}
+main{max-width:1000px;margin:0 auto;padding:14px}
+.ad{background:var(--ad);min-height:60px;border-radius:6px;overflow:hidden}
+.ad img{display:block;width:100%;height:auto}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 8px}
+nav a{background:var(--tab);color:var(--tabtx);text-decoration:none;padding:5px 16px;border-radius:14px;font-size:14px}
+section{display:flex;gap:10px;margin:14px 0;align-items:stretch}
+.side{writing-mode:vertical-rl;transform:rotate(180deg);font:700 clamp(30px,6vw,52px) Oswald,sans-serif;color:var(--g);text-align:center;letter-spacing:2px;flex:0 0 auto}
+.grid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.card{border:1.5px solid var(--bd);border-radius:10px;background:var(--card);text-align:center;overflow:hidden;display:flex;flex-direction:column}
+.card .t{padding:8px 4px 4px;font-weight:800;font-size:13px;line-height:1.35}
+.card .s{font-size:12px;color:var(--mu)}
+.card .p{font-size:14px;padding:2px 0 6px}
+.card button{border:0;border-top:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer;font:400 12px "Noto Sans Sinhala";padding:5px}
+.card .add{font:700 16px Oswald,sans-serif;color:var(--g);border-top:1.5px solid var(--bd);padding:6px;letter-spacing:.5px}
+.card .add:hover,.card .add.ok{background:var(--g);color:#fff}
+.free .add{color:var(--g2)}
+footer ul{padding-left:20px;font-size:14px;line-height:1.7;margin:20px 0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:16px;z-index:20}
+.ov.on{display:flex}
+.box{background:var(--bg);border-radius:12px;width:100%;max-width:640px;padding:16px;margin:auto;border:1.5px solid var(--g)}
+.box h2{margin:0 0 10px;color:var(--g);font-size:20px}
+.row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--bd);font-size:14px}
+.row span{flex:1}
+.q{width:26px;height:26px;border-radius:50%;border:1px solid var(--g);background:none;color:var(--tx);cursor:pointer}
+pre{background:var(--inv);border:1px solid var(--bd);border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word;font:13px/1.55 "Noto Sans Sinhala",monospace;margin:12px 0}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:8px;padding:10px 16px;font:600 14px "Noto Sans Sinhala";cursor:pointer;color:#fff;background:var(--g)}
+.btn.wa{background:#25d366;color:#053}.btn.x{background:transparent;color:var(--tx);border:1px solid var(--mu)}
+label{display:block;font-size:13px;margin:10px 0 4px}
+input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--mu);background:var(--card);color:var(--tx);font:14px "Noto Sans Sinhala"}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+.toast.on{opacity:1}
+:focus-visible{outline:3px solid #b6f000;outline-offset:2px}
+@media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
-<body class="min-h-screen smooth-scroll">
-    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b" style="border-color:var(--border)">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-2 sm:py-3">
-                <div class="flex items-center">
-                    <img src="https://www.eduhelp.lk/wp-content/uploads/2025/05/EduhelpLogo_2023-01.jpg" alt="Eduhelp Logo" class="h-8 sm:h-12 mr-2 sm:mr-3" onerror="this.style.display='none'">
-                </div>
-                <div class="hidden lg:flex space-x-4 xl:space-x-6">
-                    <a href="https://www.eduhelp.lk/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">මුල පිටුව</a>
-                    <a href="https://www.eduhelp.lk/index.php/news/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">පුවත්</a>
-                    <a href="https://www.eduhelp.lk/index.php/educational-services/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">අධ්‍යාපන සේවා</a>
-                    <a href="https://www.eduhelp.lk/index.php/encyclopedia/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">විශ්වකෝෂය</a>
-                    <a href="https://www.eduhelp.lk/index.php/image-bank/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">පින්තූර</a>
-                    <a href="https://www.eduhelp.lk/index.php/library/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">පුස්තකාලය</a>
-                    <a href="https://www.eduhelp.lk/index.php/contact/" class="nav-link transition-colors px-2 py-2 text-sm xl:text-base">විමසීම්</a>
-                </div>
-                <div class="lg:hidden">
-                    <button id="mobileMenuBtn" class="focus:outline-none touch-target p-2" style="color:var(--ink-soft)">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                </div>
-            </div>
-            <div id="mobileMenu" class="hidden lg:hidden pb-4 border-t" style="border-color:var(--border)">
-                <div class="nav-scroll flex flex-col space-y-1 pt-4">
-                    <a href="https://www.eduhelp.lk/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">මුල පිටුව</a>
-                    <a href="https://www.eduhelp.lk/index.php/news/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">පුවත්</a>
-                    <a href="https://www.eduhelp.lk/index.php/educational-services/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">අධ්‍යාපන සේවා</a>
-                    <a href="https://www.eduhelp.lk/index.php/encyclopedia/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">විශ්වකෝෂය</a>
-                    <a href="https://www.eduhelp.lk/index.php/image-bank/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">පින්තූර</a>
-                    <a href="https://www.eduhelp.lk/index.php/library/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">පුස්තකාලය</a>
-                    <a href="https://www.eduhelp.lk/index.php/contact/" class="transition-colors py-3 px-4 rounded touch-target" style="color:var(--ink-soft)">විමසීම්</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body>
+<header><h1>EDUHELP-BOOK STORE</h1><button class="cartbtn" id="cartBtn">Your Cart (0)</button></header>
+<main>
+<div class="ad"><img src="https://raw.githubusercontent.com/Amilaeduhelp/book-price/main/Our%20ad-01.gif" alt="EDUHELP දැන්වීම"></div>
+<nav><a href="#books">Books</a><a href="#papers">Papers</a><a href="#maps">Maps</a><a href="#mss">MSs</a><a href="#free">Free</a></nav>
+<div id="shop"></div>
+<footer><ul>
+<li>CoD පහසුකම් නොමැති නිසා කලින් මුදල් ගෙවා ලබාගත යුතු ය</li>
+<li>ඇණවුම් කර දින 5-7 අතර කාලයේ දී පොත් නිවසට ම ලැබෙනු ඇත</li>
+<li>හදිසි ස්වභාවික අපදා ආදි අවස්ථාවල ඇණවුමේ භාරදීම ප්‍රමාද විය හැක</li>
+<li>ඇණවුම් කළ පොත් අනටම් ලැබෙන තුරු ගෙවූ මුදලට වගකියනු ලැබේ</li>
+</ul></footer>
+</main>
 
-    <div class="banner-container">
-        <div class="container mx-auto px-2 sm:px-4">
-            <img id="bannerImage" src="https://www.eduhelp.lk/wp-content/uploads/2025/05/1c.jpg" alt="Eduhelp Banner" class="banner-image" onerror="handleBannerError(this)" onload="handleBannerLoad(this)">
-            <div id="bannerError" class="banner-image-error hidden">📚 EDUHELP BOOKSTORE<br><span class="text-sm">Your Ultimate Learning Resource Center</span></div>
-        </div>
-    </div>
+<div class="ov" id="cartOv"><div class="box">
+<h2>Your Cart / Invoice</h2>
+<div id="rows"></div>
+<pre id="inv"></pre>
+<div class="acts">
+<button class="btn" data-go="copy">Copy Invoice</button>
+<button class="btn wa" data-go="wa">Send via WhatsApp</button>
+<button class="btn x" id="closeCart">Close</button>
+</div></div></div>
 
-    <div class="min-h-screen">
-        <div class="container mx-auto mobile-padding p-4 sm:p-6 max-w-6xl">
-            <div class="text-center mb-6 sm:mb-8 pt-4 sm:pt-8">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 mobile-text" style="color:var(--teal-dark)">📚 EDUHELP BOOKSTORE</h1>
-                <p class="text-sm sm:text-base lg:text-lg" style="color:var(--ink-soft)">Your Ultimate Learning Resource Center</p>
-            </div>
+<div class="ov" id="formOv"><div class="box">
+<h2>ඔබගේ විස්තර</h2>
+<label for="cn">නම</label><input id="cn" autocomplete="name">
+<label for="ca">ලිපිනය</label><textarea id="ca" rows="3" autocomplete="street-address"></textarea>
+<label for="cp">දුරකතන අංකය</label><input id="cp" type="tel" autocomplete="tel">
+<div class="acts" style="margin-top:14px"><button class="btn" id="confirm">Continue</button><button class="btn x" id="closeForm">Cancel</button></div>
+</div></div>
+<div class="ov" id="infoOv"><div class="box">
+<h2 id="infoT"></h2>
+<p id="infoD" style="white-space:pre-line;line-height:1.8;margin:0 0 14px"></p>
+<div class="acts"><button class="btn x" id="infoClose">Close</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
 
-            <div class="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mobile-grid">
-                <div class="lg:col-span-2 order-2 lg:order-1">
-                    <div class="surface p-4 sm:p-6">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
-                            <h2 class="text-xl sm:text-2xl font-bold flex items-center">📚 Available Items</h2>
-                            <div class="flex gap-2 mobile-filter-buttons">
-                                <button id="filterAll" class="filter-btn active px-4 py-2 rounded-lg font-semibold text-sm touch-target">සියල්ල</button>
-                                <button id="filterBooks" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm touch-target">📖 පොත්</button>
-                                <button id="filterQuestions" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm touch-target">📝 ප්‍රශ්නපත්‍ර</button>
-                            </div>
-                        </div>
-                        <div id="bookList" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mobile-book-grid tablet-book-grid"></div>
-                    </div>
-                </div>
+<script>
+const DISCOUNT=0.10, WA="94716637804";
+// Free කොටසේ DOWNLOAD PDF බොත්තම් සියල්ලට පොදු Link එක
+const FREE_PDF="https://drive.google.com/drive/folders/1o-dlmE9B0U-AoZ-nP7yJB9atz-jTuwvX?usp=sharing";
+/* පොත් වෙනස් කිරීම:
+   - පොතක් එකතු කිරීමට: අදාළ කොටසේ items ලැයිස්තුවට  ["පොතේ නම",මිල]  පේළියක් දමන්න.
+   - මිල/නම වෙනස් කිරීමට: එම පේළියේම අගය වෙනස් කරන්න.
+   - ඉවත් කිරීමට: එම පේළිය මකන්න.
+   - "විස්තර බලන්න" සඳහා විස්තරය: පේළියට තුන්වන අගයක් එකතු කරන්න.
+     උදා: ["ලංකා ඉතිහාසය-1",1200,"පිටු 320\nනව සංස්කරණය"]   (\n = අලුත් පේළියක්)
+   පොත් නමේ අගට "-1", "-2" වැනි අංකයක් තිබුණොත් එය කාඩ් එකේ "කොටස" ලෙස පෙන්වයි. */
+const sets={
+ books:{label:"BOOK",items:[["ලංකා ඉතිහාසය-1",1600,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ලංකා ඉතිහාසය-2",800,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ලංකා ඉතිහාසය-3",1200,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ලංකා ඉතිහාස සාරය",1400,"උසස් පෙළ 12 හා 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව කෙටි සටහන් ලෙස සකසා තිබේ"],["ඉන්දියා ඉතිහාසය-1",1300,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ඉන්දියා ඉතිහාසය-2",1100,,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["යුරෝපා ඉතිහාසය-1",850,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["යුරෝපා ඉතිහාසය-2",800,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["යුරෝපා ඉතිහාස සාරය",1400],["ලංකා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500],["ඉන්දියා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500],["යුරෝපා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500],]},
+  papers:{label:"PAPERS",items:[
+  ["ඉන්දියා ඉතිහාසය13 ශ්‍රේණිය",500]]},
+ free:{label:"FREE",free:true,items:[1,2,3,4,5,6].map(i=>["සිතියම හෝ පොත-"+i,i==4?00:00])}
+};
+const cart={}; let inv="EDU"+Math.floor(100000+Math.random()*900000), cust=null, pending=null;
+const $=s=>document.querySelector(s), fmt=n=>n.toLocaleString("en-US");
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)}
 
-                <div class="lg:col-span-1 order-1 lg:order-2">
-                    <div class="surface p-4 sm:p-6 sticky top-20 sm:top-24 mobile-cart-sticky">
-                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">🛒 Shopping Cart <span id="cartItemCount" class="cart-count ml-2 rounded-full px-2 sm:px-3 py-1 text-sm">0</span></h2>
-                        <div id="cartItems" class="max-h-48 sm:max-h-64 overflow-y-auto mb-4 space-y-2"></div>
-                        <div id="cartSummary" class="hidden">
-                            <div class="p-3 sm:p-4 rounded-lg space-y-2 mb-4 text-sm sm:text-base" style="background:var(--paper-alt);border:1px solid var(--border)">
-                                <div class="flex justify-between"><span>Sub Total:</span><span class="font-semibold">Rs.<span id="subtotalDisplay">0.00</span></span></div>
-                                <div class="flex justify-between" style="color:var(--teal-dark)"><span>Discount (10%):</span><span class="font-semibold">-Rs.<span id="discountDisplay">0.00</span></span></div>
-                                <hr style="border-color:var(--border)" class="my-2">
-                                <div class="flex justify-between text-lg sm:text-xl font-bold"><span>Total Amount:</span><span>Rs.<span id="totalDisplay">0.00</span></span></div>
-                            </div>
-                            <div class="space-y-3">
-                                <button id="orderBtn" class="w-full order-btn text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target"><span class="mr-2">📱</span>Place Order via WhatsApp</button>
-                                <button id="copyBtn" class="w-full copy-btn px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base touch-target"><span class="mr-2">📋</span>Copy and Send Message</button>
-                            </div>
-                        </div>
-                        <div id="emptyCart" class="text-center py-6 sm:py-8" style="color:var(--ink-soft)">
-                            <div class="text-3xl sm:text-4xl mb-2">🛒</div>
-                            <p class="text-sm sm:text-base">Your cart is empty</p>
-                            <p class="text-xs sm:text-sm">Add some items to get started!</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+// render shop
+$("#shop").innerHTML=Object.entries(sets).map(([id,s])=>`<section id="${id}" class="${s.free?"free":""}"><div class="side">${s.label}</div><div class="grid">`+
+ s.items.map(([n,p],i)=>{const key=id+i;const t=n.replace(/-\d$/,""),part=n.slice(-1);
+ return `<div class="card"><div class="t">${t}<div class="s">(උසස් පෙල)${s.free?"":" - "+part}</div></div><div class="p">${p}/-</div>
+ <button data-info="${key}">${s.free?"විස්තර බලන්න":"විස්තර බලන්න"}</button>
+ <button class="add" data-key="${key}" data-name="${n}" data-price="${p}" data-free="${s.free?1:0}">${s.free?"DOWNLOAD PDF":"ADD TO CART"}</button></div>`}).join("")+`</div></section>`).join("");
 
-            <div class="mt-6 sm:mt-8">
-                <div class="surface p-4 sm:p-6">
-                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center">📞 Contact Information</h2>
-                    <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mobile-contact-grid">
-                        <div class="p-4 rounded-lg border-l-4" style="background:var(--teal-tint);border-color:var(--teal)">
-                            <h3 class="font-bold mb-2 flex items-center text-sm sm:text-base" style="color:var(--teal-dark)">📱 Get in Touch</h3>
-                            <div class="space-y-2 text-xs sm:text-sm" style="color:var(--ink)">
-                                <p><strong>WhatsApp:</strong> <a href="https://wa.me/+94716637804" target="_blank" class="underline font-semibold break-all" style="color:var(--teal-dark)">+94 716637804</a></p>
-                                <p><strong>Phone:</strong> <a href="tel:+94701551279" class="underline font-semibold" style="color:var(--teal-dark)">0701551279</a></p>
-                                <p><strong>Email:</strong> <a href="mailto:urc.eduhelp@gmail.com" class="underline font-semibold break-all" style="color:var(--teal-dark)">urc.eduhelp@gmail.com</a></p>
-                            </div>
-                        </div>
-                        <div class="p-4 rounded-lg border-l-4" style="background:var(--gold-tint);border-color:var(--gold)">
-                            <h3 class="font-bold mb-2 flex items-center text-sm sm:text-base" style="color:var(--gold)">ℹ️ How to Order</h3>
-                            <ul class="list-disc list-inside text-xs sm:text-sm space-y-1" style="color:var(--ink)">
-                                <li>Select your desired items and add to cart</li>
-                                <li>Use filter buttons to find books or question papers</li>
-                                <li>Review your order and click "Place Order"</li>
-                                <li>WhatsApp message will be sent with order details</li>
-                                <li>Or copy the message and send manually</li>
-                                <li>We will contact you with payment instructions</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+$("#shop").addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.info){const m=b.dataset.info.match(/^(\D+)(\d+)$/),it=sets[m[1]].items[m[2]];
+  $("#infoT").textContent=it[0];$("#infoD").textContent=it[2]||"විස්තර ඉක්මනින් එක් කෙරේ.";$("#infoOv").classList.add("on");return}
+ if(b.dataset.free==="1"){window.open(FREE_PDF,"_blank","noopener");return}
+ const k=b.dataset.key;
+ cart[k]=cart[k]||{name:b.dataset.name,price:+b.dataset.price,qty:0};cart[k].qty++;
+ b.classList.add("ok");setTimeout(()=>b.classList.remove("ok"),500);
+ upd();toast(b.dataset.name+" cart එකට එක් කළා");
+});
+$("#infoClose").onclick=()=>$("#infoOv").classList.remove("on");
+$("#infoOv").addEventListener("click",e=>{if(e.target.id==="infoOv")e.target.classList.remove("on")});
+const count=()=>Object.values(cart).reduce((a,c)=>a+c.qty,0);
+function upd(){$("#cartBtn").textContent=`Your Cart (${count()})`}
 
-    <script>
-        const books=[
-            {id:1,name:"ලංකා ඉතිහාසය-1",price:1600,category:"book"},
-            {id:2,name:"ලංකා ඉතිහාසය-2",price:800,category:"book"},
-            {id:3,name:"ලංකා ඉතිහාසය-3",price:1200,category:"book"},
-            {id:8,name:"ලංකා ඉතිහාස සාරය(උසස් පෙළ ලංකා සම්පූර්ණ කෙටි සටහන් පොත)",price:1400,category:"book"},
-            {id:4,name:"ඉන්දියා ඉතිහාසය-1",price:1300,category:"book"},
-            {id:5,name:"ඉන්දියා ඉතිහාසය-2",price:1100,category:"book"},
-            {id:6,name:"යුරෝපා ඉතිහාසය-1",price:850,category:"book"},
-            {id:7,name:"යුරෝපා ඉතිහාසය-2",price:800,category:"book"},
-            {id:8,name:"යුරෝපා ඉතිහාස සාරය(උසස් පෙළ යුරෝපා සම්පූර්ණ කෙටි සටහන් පොත)",price:1400,category:"book"},
-            {id:9,name:"ලංකා MCQ පිළිතුරු විග්‍රහය",price:1500,category:"book"},
-            {id:10,name:"ඉන්දියා MCQ පිළිතුරු විග්‍රහය",price:1500,category:"book"},
-            {id:11,name:"යුරෝපා MCQ පිළිතුරු විග්‍රහය",price:1500,category:"book"},
-            {id:12,name:"ඉන්දියා අර්ථදීපනී",price:2500,category:"book"},
-            {id:13,name:"සා පෙළ උපකාරක පොත (ගුරු)",price:1200,category:"book"},
-            {id:14,name:"සා පෙළ උපකාරක පොත (ශිෂ්‍ය)",price:800,category:"book"},
-            {id:15,name:"සා පෙළ ලංකා ලෝක සිතියම් පොත",price:800,category:"book"},
-            {id:16,name:"සා පෙළ සිතියම් අභ්‍යාස පොත",price:600,category:"book"},
-            {id:17,name:"13 ශ්‍රේණිය ඉන්දියා ඉතිහාසය ප්‍රශ්නපත්‍ර",price:500,category:"question"},
-            {id:18,name:"සා.පෙළ සිතියම් හා අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1TLqAsfoAFxUZeBO4c2884O3_xwolRu4k/view?usp=drive_link"},
-            {id:19,name:"සා.පෙළ ස්ථාන ලකුණු කළ සිතියම් (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1SmAToN3qdjCii6z4u89VzKDozAGHni7R/view?usp=sharing"},
-            {id:20,name:"උසස් පෙළ ලංකා සිතියම් පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/10m2fa-xaWL2aIJQjoRdq0bk8BhmpGDc-/view?usp=drive_link"},
-            {id:21,name:"උසස් පෙළ ඉන්දියා සිතියම් පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1FT2urdO7m2bpJPQuDDOFn0b5O3syvO39/view?usp=drive_link"},
-            {id:22,name:"උසස් පෙළ යුරෝපා සිතියම් පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1oOZKWFV5TOfl7fTa5cbtZIuIrGSEnqly/view?usp=drive_link"},
-            {id:23,name:"උසස් පෙළ ලංකා සිතියම් අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1pqbAj8S3NtKqsh0nw8g4JglrywDkvspQ/view?usp=drive_link"},
-            {id:24,name:"උසස් පෙළ ඉන්දියා සිතියම් අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/1vl66o4WI7wIYh24Xj8uZ0tymu3-FkqIp/view?usp=drive_link"},
-            {id:25,name:"උසස් පෙළ යුරෝපා සිතියම් අභ්‍යාස පොත (PDF)",price:0,category:"book",downloadLink:"https://drive.google.com/file/d/13Gz_3awRKYW7MtK6UqmELRDXOqqV52Xn/view?usp=drive_link"}
-        ];
-        let cart=[],currentFilter='all';
-        const BUSINESS_WHATSAPP="+94716637804";
-        
-        function handleBannerError(img){img.style.display='none';document.getElementById('bannerError').classList.remove('hidden')}
-        function handleBannerLoad(img){img.classList.add('loaded')}
-        function isMobileDevice(){return window.innerWidth<=640}
-        
-        function filterBooks(category){
-            currentFilter=category;
-            document.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.remove('active'));
-            if(category==='all')document.getElementById('filterAll').classList.add('active');
-            else if(category==='book')document.getElementById('filterBooks').classList.add('active');
-            else if(category==='question')document.getElementById('filterQuestions').classList.add('active');
-            const filteredBooks=category==='all'?books:books.filter(book=>book.category===category);
-            displayBooks(filteredBooks);
-        }
-        
-        function displayBooks(booksToShow){
-            const bookList=document.getElementById('bookList'),isMobile=isMobileDevice();
-            bookList.innerHTML='';
-            booksToShow.forEach(book=>{
-                const bookDiv=document.createElement('div'),categoryIcon=book.category==='book'?'📖':'📝',categoryLabel=book.category==='book'?'පොත':'ප්‍රශ්නපත්‍ර';
-                bookDiv.className=`surface hover-lift catalog-card cursor-pointer ${isMobile?'mobile-book-card p-3':'p-4'}`;
-                bookDiv.innerHTML=`<div class="text-center"><div class="${isMobile?'text-2xl mb-2':'text-3xl mb-3'}">${categoryIcon}</div><div class="text-xs font-semibold mb-1" style="color:var(--gold)">${categoryLabel}</div><h3 class="font-semibold mb-2 flex items-center justify-center leading-tight ${isMobile?'mobile-book-title text-xs':'text-sm'} min-h-[2.5rem]">${book.name}</h3><div class="text-lg mb-3 ${book.price===0?'free-tag':'price-tag'}">${book.price===0?'නොමිලේ':`Rs. ${book.price.toLocaleString()}`}</div><button onclick="addToCart(${book.id})" class="btn-primary text-white px-3 py-2 rounded-lg font-semibold w-full text-xs sm:text-sm touch-target">${book.downloadLink?'📥 Download නොමිලේ':'🛒 Add to Cart'}</button></div>`;
-                bookList.appendChild(bookDiv);
-            });
-        }
-        
-        function addToCart(bookId){
-            const book=books.find(b=>b.id===bookId);
-            if(book.downloadLink){window.open(book.downloadLink,'_blank');return}
-            const existingItem=cart.find(item=>item.id===bookId);
-            if(existingItem)existingItem.quantity+=1;
-            else cart.push({...book,quantity:1});
-            updateCartDisplay();
-            const button=event.target,originalText=button.innerHTML;
-            button.innerHTML='✅ Added!';
-            button.style.background='#254A42';
-            setTimeout(()=>{button.innerHTML=originalText;button.style.background=''},1000);
-        }
-        
-        function removeFromCart(bookId){cart=cart.filter(item=>item.id!==bookId);updateCartDisplay()}
-        
-        function updateQuantity(bookId,change){
-            const item=cart.find(item=>item.id===bookId);
-            if(item){item.quantity+=change;if(item.quantity<=0)removeFromCart(bookId);else updateCartDisplay()}
-        }
-        
-        function updateCartDisplay(){
-            const cartItemsDiv=document.getElementById('cartItems'),cartItemCount=document.getElementById('cartItemCount'),cartSummary=document.getElementById('cartSummary'),emptyCart=document.getElementById('emptyCart');
-            const totalItems=cart.reduce((sum,item)=>sum+item.quantity,0);
-            cartItemCount.textContent=totalItems;
-            if(cart.length===0){cartSummary.classList.add('hidden');emptyCart.classList.remove('hidden');cartItemsDiv.innerHTML='';return}
-            cartSummary.classList.remove('hidden');emptyCart.classList.add('hidden');
-            cartItemsDiv.innerHTML=cart.map(item=>`<div class="p-3 rounded-lg" style="background:var(--paper-alt);border:1px solid var(--border)"><div class="flex justify-between items-start mb-2"><h4 class="font-semibold text-sm flex-1 mr-2">${item.name}</h4><button onclick="removeFromCart(${item.id})" class="text-sm font-bold touch-target p-1" style="color:var(--danger)">×</button></div><div class="flex justify-between items-center"><div class="flex items-center space-x-2"><button onclick="updateQuantity(${item.id},-1)" class="rounded px-2 py-1 text-xs font-bold touch-target" style="background:var(--border);color:var(--ink)">-</button><span class="text-sm font-semibold">${item.quantity}</span><button onclick="updateQuantity(${item.id},1)" class="rounded px-2 py-1 text-xs font-bold touch-target" style="background:var(--border);color:var(--ink)">+</button></div><div class="text-sm font-bold" style="color:var(--teal-dark)">${item.price===0?'නොමිලේ':`Rs. ${(item.price*item.quantity).toLocaleString()}`}</div></div></div>`).join('');
-            const subtotal=cart.reduce((sum,item)=>sum+(item.price*item.quantity),0),discount=subtotal*0.10,total=subtotal-discount;
-            document.getElementById('subtotalDisplay').textContent=subtotal.toLocaleString();
-            document.getElementById('discountDisplay').textContent=discount.toLocaleString();
-            document.getElementById('totalDisplay').textContent=total.toLocaleString();
-        }
-        
-        function generateOrderMessage(){
-            const orderItems=cart.map(item=>`• ${item.name} - ${item.quantity} ${item.quantity>1?'copies':'copy'} - ${item.price===0?'නොමිලේ':`Rs. ${(item.price*item.quantity).toLocaleString()}`}`).join('\n');
-            const subtotal=cart.reduce((sum,item)=>sum+(item.price*item.quantity),0),discount=subtotal*0.10,total=subtotal-discount;
-            return`📚 *EDUHELP BOOKSTORE ORDER*\n\n*Order Details:*\n${orderItems}\n\n*Summary:*\nSub Total: Rs. ${subtotal.toLocaleString()}\nDiscount (10%): -Rs. ${discount.toLocaleString()}\n*Total Amount: Rs. ${total.toLocaleString()}*\n\n*Contact Information:*\nPlease confirm this order and provide delivery details.\n\nThank you for choosing Eduhelp Bookstore! 🙏`;
-        }
-        
-        function placeOrder(){
-            if(cart.length===0){alert('Your cart is empty! Please add some items first.');return}
-            const message=generateOrderMessage(),encodedMessage=encodeURIComponent(message),whatsappUrl=`https://wa.me/${BUSINESS_WHATSAPP.replace('+','')}?text=${encodedMessage}`;
-            window.open(whatsappUrl,'_blank');
-        }
-        
-        function copyMessage(){
-            if(cart.length===0){alert('Your cart is empty! Please add some items first.');return}
-            const message=generateOrderMessage();
-            if(navigator.clipboard&&window.isSecureContext){
-                navigator.clipboard.writeText(message).then(()=>showCopySuccess()).catch(()=>fallbackCopyTextToClipboard(message));
-            }else fallbackCopyTextToClipboard(message);
-        }
-        
-        function fallbackCopyTextToClipboard(text){
-            const textArea=document.createElement("textarea");
-            textArea.value=text;
-            textArea.style.top="0";
-            textArea.style.left="0";
-            textArea.style.position="fixed";
-            textArea.style.opacity="0";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try{document.execCommand('copy');showCopySuccess()}catch(err){alert('Failed to copy message. Please try again.')}
-            document.body.removeChild(textArea);
-        }
-        
-        function showCopySuccess(){
-            const copyBtn=document.getElementById('copyBtn'),originalText=copyBtn.innerHTML;
-            copyBtn.innerHTML='<span class="mr-2">✅</span> Copied!';
-            copyBtn.style.background='#33645A';
-            copyBtn.style.color='#fff';
-            setTimeout(()=>{copyBtn.innerHTML=originalText;copyBtn.style.background='';copyBtn.style.color=''},2000);
-        }
-        
-        function toggleMobileMenu(){document.getElementById('mobileMenu').classList.toggle('hidden')}
-        
-        function initializePage(){
-            displayBooks(books);
-            document.getElementById('filterAll').addEventListener('click',()=>filterBooks('all'));
-            document.getElementById('filterBooks').addEventListener('click',()=>filterBooks('book'));
-            document.getElementById('filterQuestions').addEventListener('click',()=>filterBooks('question'));
-            document.getElementById('orderBtn').addEventListener('click',placeOrder);
-            document.getElementById('copyBtn').addEventListener('click',copyMessage);
-            document.getElementById('mobileMenuBtn').addEventListener('click',toggleMobileMenu);
-            document.addEventListener('click',function(event){
-                const mobileMenu=document.getElementById('mobileMenu'),mobileMenuBtn=document.getElementById('mobileMenuBtn');
-                if(!mobileMenu.contains(event.target)&&!mobileMenuBtn.contains(event.target))mobileMenu.classList.add('hidden');
-            });
-            window.addEventListener('resize',()=>{
-                const filteredBooks=currentFilter==='all'?books:books.filter(book=>book.category===currentFilter);
-                displayBooks(filteredBooks);
-            });
-        }
-        
-        document.addEventListener('DOMContentLoaded',initializePage);
-    </script>
+// invoice text
+function build(){
+ const now=new Date(),p=n=>String(n).padStart(2,"0");
+ const date=`${p(now.getDate())}/${p(now.getMonth()+1)}/${now.getFullYear()}`,time=`${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
+ const items=Object.values(cart),sub=items.reduce((a,c)=>a+c.price*c.qty,0),dis=Math.round(sub*DISCOUNT),tot=sub-dis;
+ const L="────────────────────────────────────────",H="════════════════════════════════════════";
+ let t=`🏪 EDUHELP BOOKSTORE\n📧 urc.eduhelp@gmail.com\n📞 +94716637804 / 0701551279\n\n${H}\n                 📋 INVOICE\n${H}\n\n📅 දිනය: ${date}\n⏰ වේලාව: ${time}\n🆔 Invoice #: ${inv}\n\n${L}\n📚 ඇණවුම් කළ පොත්:\n${L}\n\n`;
+ t+=items.length?items.map((c,i)=>`${i+1}. ${c.name}${c.qty>1?" x"+c.qty:""}\n   Rs.${fmt(c.price*c.qty)}`).join("\n\n"):"(Cart එක හිස්ය)";
+ t+=`\n\n${L}\n💰 ගෙවීම් සාරාංශය:\n${L}\n\nඋප එකතුව (Sub Total): Rs.${fmt(sub)}\nවට්ටම (Discount): -Rs.${fmt(dis)}\n🎯 ඔබ ගෙවියයුතු මුදල: Rs.${fmt(tot)}\n\n${H}\n💳 ගෙවීම් විස්තර:\n${H}\n\n🏦 PEOPLE'S BANK - Mathugama\n💳 A/C: 070-2-001-6-23-28-309\n👤 UKDA KOSALA\n\n🏦 BANK OF CEYLON - Kalutara\n💳 A/C: 89-32-36-00\n👤 RG LAKMINI\n\n${L}\n📋 සටහන්:\n${L}\n\n✅ Online Transfer කළ පසු bank message එක forward කරන්න\n✅ Cash deposit කළ නම් receipt එකේ photo එක එවන්න\n✅ ඔබගේ නම, ලිපිනය සහ phone number එවන්න\n✅ Payment confirm වූ පසු delivery arrange කරනවා\n\n${H}\n📞 අමතන්න:\n${H}\n\n📱 WhatsApp: +94716637804\n☎️  Call: 0701551279\n📧 Email: urc.eduhelp@gmail.com\n\n🙏 ඔබගේ ඇණවුම සඳහා ස්තුතියි!\nEDUHELP BOOKSTORE - Your Education Partner`;
+ if(cust)t+=`\n\n${H}\n👤 ගනුදෙනුකරුගේ විස්තර:\n${H}\n\nනම: ${cust.n}\nලිපිනය: ${cust.a}\nදුරකතන: ${cust.p}`;
+ return t;
+}
+function render(){
+ $("#rows").innerHTML=Object.entries(cart).filter(([,c])=>c.qty>0).map(([k,c])=>`<div class="row"><span>${c.name} — Rs.${fmt(c.price)}</span>
+ <button class="q" data-k="${k}" data-d="-1" aria-label="අඩු කරන්න">−</button><b>${c.qty}</b><button class="q" data-k="${k}" data-d="1" aria-label="වැඩි කරන්න">+</button></div>`).join("");
+ $("#inv").textContent=build();upd();
+}
+$("#cartBtn").onclick=()=>{cust=null;render();$("#cartOv").classList.add("on")};
+$("#closeCart").onclick=()=>$("#cartOv").classList.remove("on");
+$("#rows").addEventListener("click",e=>{const b=e.target.closest("[data-k]");if(!b)return;
+ const c=cart[b.dataset.k];c.qty+=+b.dataset.d;if(c.qty<1)delete cart[b.dataset.k];cust=null;render()});
+
+// customer popup then action
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{
+ if(!count()){toast("Cart එක හිස්ය");return}
+ pending=b.dataset.go;$("#formOv").classList.add("on");$("#cn").focus()});
+$("#closeForm").onclick=()=>$("#formOv").classList.remove("on");
+$("#confirm").onclick=()=>{
+ const n=$("#cn").value.trim(),a=$("#ca").value.trim(),p=$("#cp").value.trim();
+ if(!n||!a||!p){toast("නම, ලිපිනය, දුරකතන අංකය සම්පූර්ණ කරන්න");return}
+ cust={n,a,p};render();$("#formOv").classList.remove("on");
+ const text=build();
+ if(pending==="wa"){window.open(`https://wa.me/${WA}?text=${encodeURIComponent(text)}`,"_blank")}
+ else{copy(text)}
+};
+function copy(text){
+ const fb=()=>{const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();try{document.execCommand("copy");toast("Invoice එක copy වුණා")}catch(_){toast("Copy කළ නොහැකි විය — අතින් තෝරා copy කරන්න")}t.remove()};
+ try{navigator.clipboard.writeText(text).then(()=>toast("Invoice එක copy වුණා"),fb)}catch(_){fb()}
+}
+</script>
 </body>
 </html>
