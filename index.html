@@ -30,8 +30,11 @@ section{display:flex;gap:10px;margin:14px 0;align-items:stretch}
 .card .p{font-size:14px;padding:2px 0 6px}
 .card button{border:0;border-top:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer;font:400 12px "Noto Sans Sinhala";padding:5px}
 .card .add{font:700 16px Oswald,sans-serif;color:var(--g);border-top:1.5px solid var(--bd);padding:6px;letter-spacing:.5px}
+.card .linkbtn{border:0;border-top:1px solid var(--bd);background:transparent;color:#0a6cd9;cursor:pointer;font:600 12px "Noto Sans Sinhala";padding:5px}
 .card .add:hover,.card .add.ok{background:var(--g);color:#fff}
 .free .add{color:var(--g2)}
+.samplebtn{text-decoration:none;color:var(--tx);cursor:pointer;justify-content:space-between}
+.samplebtn .t{flex:1;display:flex;align-items:center;justify-content:center;padding:14px 6px}
 footer ul{padding-left:20px;font-size:14px;line-height:1.7;margin:20px 0}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:16px;z-index:20}
 .ov.on{display:flex}
@@ -56,8 +59,12 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <header><h1>EDUHELP-BOOK STORE</h1><button class="cartbtn" id="cartBtn">Your Cart (0)</button></header>
 <main>
 <div class="ad"><img src="https://raw.githubusercontent.com/Amilaeduhelp/book-price/main/Our%20ad-01.gif" alt="EDUHELP දැන්වීම"></div>
-<nav><a href="#books">Books</a><a href="#papers">Papers</a><a href="#maps">Maps</a><a href="#mss">MSs</a><a href="#free">Free</a></nav>
+<nav><a href="#books">Books</a><a href="#papers">Papers</a><a href="#maps">Maps</a><a href="#mss">MSs</a><a href="#free">Free</a><a href="#sample">Sample</a></nav>
 <div id="shop"></div>
+<section id="sample" class="samplesec">
+ <div class="side">SAMPLE</div>
+ <div class="grid" id="sampleGrid"></div>
+</section>
 <footer><ul>
 <li>CoD පහසුකම් නොමැති නිසා කලින් මුදල් ගෙවා ලබාගත යුතු ය</li>
 <li>ඇණවුම් කර දින 5-7 අතර කාලයේ දී පොත් නිවසට ම ලැබෙනු ඇත</li>
@@ -93,19 +100,71 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <script>
 const DISCOUNT=0.10, WA="94716637804";
 // Free කොටසේ DOWNLOAD PDF බොත්තම් සියල්ලට පොදු Link එක
-const FREE_PDF="https://drive.google.com/drive/folders/1o-dlmE9B0U-AoZ-nP7yJB9atz-jTuwvX?usp=sharing";
+const FREE_PDF="https://drive.google.com/uc?export=download&id=1hUyV97t2X_vdOpMRNG10i_kn8s7FQjWR";
+/* Sample Link එකතු කිරීම:
+   පහත samples ලැයිස්තුවට  {n:"නම", u:"Google Drive Link"}  ලෙස පේළියක් දමන්න. */
+const samples=[
+  {n:"යුරෝපා ඉතිහාස සාරය", u:"https://drive.google.com/file/d/1NKj7KaqF4lrgKFVmG2jiOIkdJOPcburb/view?usp=drive_link"},
+  {n:"යුරෝපා ඉතිහාසය", u:"https://drive.google.com/file/d/12Igg7VBCr1AvcVWu4Y3o3Xqk5_YN9EJd/view?usp=sharing"},
+  {n:"ලංකා ඉතිහාසය", u:"https://drive.google.com/file/d/1DvG6akaAz6hgBXVrQm5u433rNXM9Nksd/view?usp=sharing"},
+  {n:"ඉන්දියා ඉතිහාසය", u:"https://drive.google.com/file/d/1-jKIO0_vAY1vefEBZyKws5rJr2suqZt1/view?usp=sharing"}
+];
 /* පොත් වෙනස් කිරීම:
    - පොතක් එකතු කිරීමට: අදාළ කොටසේ items ලැයිස්තුවට  ["පොතේ නම",මිල]  පේළියක් දමන්න.
    - මිල/නම වෙනස් කිරීමට: එම පේළියේම අගය වෙනස් කරන්න.
    - ඉවත් කිරීමට: එම පේළිය මකන්න.
    - "විස්තර බලන්න" සඳහා විස්තරය: පේළියට තුන්වන අගයක් එකතු කරන්න.
      උදා: ["ලංකා ඉතිහාසය-1",1200,"පිටු 320\nනව සංස්කරණය"]   (\n = අලුත් පේළියක්)
+   - unik Link එකක් (Maps/MSs වැනි) එකතු කිරීමට: පේළියට හතරවන අගයක් එකතු කරන්න.
+     විස්තරයක් නැත්නම් තුන්වන අගය "" ලෙස තබන්න.
+     උදා: ["යුරෝපා සිතියම-1",1200,"","https://drive.google.com/....view?usp=drive_link"]
+     Link එකක් තවම නැති items වල "--add link here--" ලෙසම තබන්න - එය click කළ විට
+     "link එකක් තවම එකතු කර නැත" කියා පණිවිඩයක් පෙන්වයි.
    පොත් නමේ අගට "-1", "-2" වැනි අංකයක් තිබුණොත් එය කාඩ් එකේ "කොටස" ලෙස පෙන්වයි. */
 const sets={
- books:{label:"BOOK",items:[["ලංකා ඉතිහාසය-1",1600,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ලංකා ඉතිහාසය-2",800,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ලංකා ඉතිහාසය-3",1200,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ලංකා ඉතිහාස සාරය",1400,"උසස් පෙළ 12 හා 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව කෙටි සටහන් ලෙස සකසා තිබේ"],["ඉන්දියා ඉතිහාසය-1",1300,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["ඉන්දියා ඉතිහාසය-2",1100,,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["යුරෝපා ඉතිහාසය-1",850,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["යුරෝපා ඉතිහාසය-2",800,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],["යුරෝපා ඉතිහාස සාරය",1400],["ලංකා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500],["ඉන්දියා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500],["යුරෝපා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500],]},
-  papers:{label:"PAPERS",items:[
-  ["ඉන්දියා ඉතිහාසය13 ශ්‍රේණිය",500]]},
- free:{label:"FREE",free:true,items:[1,].map(i=>["සිතියම් සහ පොත්-"+i,i==4?00:00])}
+ books:{label:"BOOK",items:[
+ ["ලංකා ඉතිහාසය-1",1600,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
+ ["ලංකා ඉතිහාසය-2",800,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
+ ["ලංකා ඉතිහාසය-3",1200,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
+ ["ලංකා ඉතිහාස සාරය",1400,"උසස් පෙළ 12 හා 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව කෙටි සටහන් ලෙස සකසා තිබේ"],
+ ["ඉන්දියා ඉතිහාසය-1",1300,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
+ ["ඉන්දියා ඉතිහාසය-2",1100,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
+ ["යුරෝපා ඉතිහාසය-1",850,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
+ ["යුරෝපා ඉතිහාසය-2",800,"උසස් පෙළ 13 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
+ ["යුරෝපා ඉතිහාස සාරය",1400,"උසස් පෙළ 12 හා 13 ශ්‍රේණි විෂය නිර්දේශය අනුව කෙටි සටහන් ලෙස සකසා තිබේ"],
+ ["ලංකා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500,"උසස් පෙළ 12 හා 13 ශ්‍රේණි විෂය නිර්දේශය බහුවරණ ප්‍රශ්න හා පිළිතුරු හේතු විස්තර සහිතව සකසා තිබේ"],
+ ["ඉන්දියා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500,"උසස් පෙළ 12 හා 13 ශ්‍රේණි විෂය නිර්දේශය බහුවරණ ප්‍රශ්න හා පිළිතුරු හේතු විස්තර සහිතව සකසා තිබේ"],
+ ["යුරෝපා ඉතිහාසය MCQ පිළිතුරු  විග්‍රහය",1500,"උසස් පෙළ 12 හා 13 ශ්‍රේණි විෂය නිර්දේශය බහුවරණ ප්‍රශ්න හා පිළිතුරු හේතු විස්තර සහිතව සකසා තිබේ"],
+ ["සාමාන්‍ය පෙළ සිතියම් පොත"‍,700,"සාමාන්‍ය පෙළ විෂය නිර්දේශය අනුව සකසා ඇත"],
+ ["සාමාන්‍ය පෙළ සිතියම් අභ්‍යාස පොත", 700,"සාමාන්‍ය පෙළ විෂය නිර්දේශය අනුව සකසා ඇත"],
+ ["සාමාන්‍ය පෙළ උපකාරක පොත"‍, 700,"සාමාන්‍ය පෙළ විෂය නිර්දේශය අනුව රචනාමය ප්‍රශ්න සඳහා මගපෙන්වීමක් සහිත සකසා ඇත. සිතියම් ද ඇතුළත් ය"]]},
+papers:{label:"PAPERS",items:[
+  ["12 ශ්‍රේණිය පළමු වාරය-ලංකා ඉතිහාසය-MCQ පිළිතුර සමග",1000],
+  ["13 ශ්‍රේණිය පළමු වාරය-යුරෝපා ඉතිහාසය-MCQ පිළිතුර සමග",1000],
+  ["13 ශ්‍රේණිය පළමු වාරය-ඉන්දියා ඉතිහාසය-MCQ පිළිතුර සමග",1000],
+  ["13 ශ්‍රේණිය පළමු වාරය-ලංකා ඉතිහාසය-MCQ පිළිතුර සමග",1000]]},
+ maps:{label:"MAPS FREE",items:[
+  ["සාමාන්‍ය පෙළ (ලංකා සිතියම)",00,"","https://drive.google.com/file/d/1hUyV97t2X_vdOpMRNG10i_kn8s7FQjWR/view?usp=sharing"],
+  ["සාමාන්‍ය පෙළ(සම්පූර්ණ ලෝක සිතියම)",00,"","https://drive.google.com/file/d/1G42A_aj3wb76sCyQETTmKc_UAQSEB1WJ/view?usp=sharing"],
+  ["සාමාන්‍ය පෙළ (යුරේසියා සිතියම)",00,"","https://drive.google.com/file/d/1m5_DM2eStcfhunN0Q4hmlY8Tpvha2ARJ/view?usp=sharing"],
+  ["උසස් පෙළ (යුරෝපා සිතියම-කළු මුහුද දක්වා)",00,"","https://drive.google.com/file/d/1m5_DM2eStcfhunN0Q4hmlY8Tpvha2ARJ/view?usp=sharing"],
+  ["උසස් පෙළ (යුරෝපා සිතියම-කැස්පියන් මුහුද දක්වා)",00,"","https://drive.google.com/file/d/1DhEz4XLOXbmoMnXmOvmITiWG7JM2EQsE/view?usp=sharing"],
+  ["උසස් පෙළ (ඉන්දියා සිතියම)",00,""," https://drive.google.com/file/d/1sbnrZENSVpd9yj4why2hQwYrhTKU9Zk2/view?usp=sharing"],
+  ["උසස් පෙළ (ලංකා සිතියම)",00,"","https://drive.google.com/file/d/1nttZpMikSVxSp6YYu4H0keOD_BEOIXVU/view?usp=sharing"]]},
+ mss:{label:"MSs FREE",items:[
+  ["සාමාන්‍ය පෙළ ඉතිහාසය-1",00,"","https://drive.google.com/drive/folders/1U47fyUeeWjk4lA_lQaj5UQhQq38mZr5G?usp=sharing"],
+  ["උසස් පෙළ යුරෝපා ඉතිහාසය-2",00,"","https://drive.google.com/drive/folders/1ORpuMVJVMfmbemmtNcG2y7gJfSAixGDe?usp=drive_link"],
+  ["උසස් පෙළ ඉන්දියා ඉතිහාසය-3",00,"","https://drive.google.com/drive/folders/1AeaBBQCHCBjd5_nML3V4Ma98nN3NSJ2I?usp=sharing"],
+  ["ලංකා ඉතිහාසය උසස් පෙළ",00,"","https://drive.google.com/drive/folders/11FjIlGY59cHI9I6GEd6y0IHY5XfbDEuq?usp=sharing"],
+  ["සාමාන්‍ය පෙළ නිබන්ධන හා ප්‍රශ්නපත්‍ර",00,"","https://drive.google.com/drive/folders/1s6d1hxGvsk0Q9Qli0yogwg4v_LAygCJP?usp=drive_link"]]},
+free:{label:"BOOK FREE",items:[
+  ["සාමාන්‍ය පෙළ ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/19siMFGGFAd5nTOQpv1eFVXft6Vvkknax/view?usp=drive_link"],
+  ["උසස් පෙළ ලංකා ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/16bg1THK-pWvuA2DFQijiqYh7LKVse4tn/view?usp=sharing"],
+  ["උසස් පෙළ ඉන්දියා ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/1HAcBUf0PFnOTZXJaIOo2zIWRgAZOq5io/view?usp=drive_link"],
+  ["උසස් පෙළ යුරෝපා ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/1CAZcbETLwTIYXNPg-aHPK8ApFbGCIK_d/view?usp=drive_link"],
+  ["උසස් පෙළ ලංකා ඉතිහාසය සිතියම් අභ්‍යාස පොත",00,"","https://drive.google.com/file/d/1-G5-qLVzbTGZ7f8Gg9UCG0JeC-PLJwiS/view?usp=drive_link"],
+  ["උසස් පෙළ ඉන්දියා ඉතිහාසය සිතියම් අභ්‍යාස පොත",00,"","https://drive.google.com/file/d/1hNhuxK9FgBzT0z9uwIvHmHrZQwaju6_I/view?usp=drive_link"],
+  ["උසස් පෙළ යුරෝපා ඉතිහාසය සිතියම් අභ්‍යාස පොත",00,"","https://drive.google.com/file/d/1861lsCrkh2pmY_dPfNLIr_c59AD3D8v2/view?usp=drive_link"]]},
 };
 const cart={}; let inv="EDU"+Math.floor(100000+Math.random()*900000), cust=null, pending=null;
 const $=s=>document.querySelector(s), fmt=n=>n.toLocaleString("en-US");
@@ -113,13 +172,19 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clea
 
 // render shop
 $("#shop").innerHTML=Object.entries(sets).map(([id,s])=>`<section id="${id}" class="${s.free?"free":""}"><div class="side">${s.label}</div><div class="grid">`+
- s.items.map(([n,p],i)=>{const key=id+i;const t=n.replace(/-\d$/,""),part=n.slice(-1);
+ s.items.map(([n,p,,link],i)=>{const key=id+i;const t=n.replace(/-\d$/,""),part=n.slice(-1);
  return `<div class="card"><div class="t">${t}<div class="s">(උසස් පෙල)${s.free?"":" - "+part}</div></div><div class="p">${p}/-</div>
  <button data-info="${key}">${s.free?"විස්තර බලන්න":"විස්තර බලන්න"}</button>
+ ${link?`<button class="linkbtn" data-link="${link}">බලන්න</button>`:""}
  <button class="add" data-key="${key}" data-name="${n}" data-price="${p}" data-free="${s.free?1:0}">${s.free?"DOWNLOAD PDF":"ADD TO CART"}</button></div>`}).join("")+`</div></section>`).join("");
+
+$("#sampleGrid").innerHTML=samples.map(s=>`<a class="card samplebtn" href="${s.u}" target="_blank" rel="noopener"><div class="t">${s.n}</div><div class="add">Sample බලන්න</div></a>`).join("")||`<p style="color:var(--mu)">Sample links නැත</p>`;
 
 $("#shop").addEventListener("click",e=>{
  const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.link){
+  if(b.dataset.link==="--add link here--"){toast("මෙම item එකට link එකක් තවම එකතු කර නැත");return}
+  window.open(b.dataset.link,"_blank","noopener");return}
  if(b.dataset.info){const m=b.dataset.info.match(/^(\D+)(\d+)$/),it=sets[m[1]].items[m[2]];
   $("#infoT").textContent=it[0];$("#infoD").textContent=it[2]||"විස්තර ඉක්මනින් එක් කෙරේ.";$("#infoOv").classList.add("on");return}
  if(b.dataset.free==="1"){window.open(FREE_PDF,"_blank","noopener");return}
