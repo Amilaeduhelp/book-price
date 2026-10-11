@@ -58,6 +58,9 @@ footer ul{padding-left:20px;font-size:14px;line-height:1.7;margin:20px 0}
 .bank:disabled{opacity:.6;cursor:wait}
 .bank .h{font-weight:800;color:var(--wbd);margin-bottom:4px}
 .bank small{display:block;color:var(--mu);margin-top:6px}
+.bank{cursor:default;border-style:solid}
+.bankbtn{background:var(--wbd);color:#fff;font-size:15px;padding:12px 18px;flex:1;min-width:220px;box-shadow:0 3px 0 #a85c00}
+.bankbtn:active{transform:translateY(2px);box-shadow:none}
 .msg{line-height:1.9;font-size:14.5px;margin:0}
 label{display:block;font-size:13px;margin:10px 0 4px}
 input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--mu);background:var(--card);color:var(--tx);font:14px "Noto Sans Sinhala"}
@@ -109,13 +112,16 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <div class="ov" id="payOv"><div class="box warn">
 <h2>වැදගත් දැනුම්දීමක්</h2>
 <p class="msg">හිතවත් පාරිභෝගිකය, CoD පහසුකම දැනට අත්හිටුවා ඇත. ඇතැම් ඇනවුම් භාරනොගෙන හරවා එවීම නිසා එහි මූල්‍ය පාඩුව අපට දැරීමට සිදුවීම නිසා එසේ අහෝසි කර ඇත. ඒ නිසා ඔබ විසින් මුදල් ගෙවා පොත් ලබා ගතයුතු ය. ඇනවුම් කළ පොත් ඔබ අතට ලැබෙන තුරු ම ගෙවූ මුදලට අප වගකියනු ලැබේ. පහතින් 'bank detail' මත Click කිරීමෙන් බැංකු ගිණුම් විස්තර පිටපත් කරගැනීමටත් අදාළ විස්තර හා ඔබගේ Invoice එක PDF එකක් ලෙස Download කරගැනීමටත් හැකි ය.</p>
-<button class="bank" id="bankBtn">
-<div class="h">🏦 Bank Details (Click කරන්න)</div>
+<div class="bank">
+<div class="h">🏦 Bank Details</div>
 🏦 PEOPLE'S BANK - Mathugama<br>💳 A/C: 070-2-001-6-23-28-309<br>👤 UKDA KOSALA<br><br>
 🏦 BANK OF CEYLON - Kalutara<br>💳 A/C: 89-32-36-00<br>👤 RG LAKMINI
-<small>Click කළ විට ඇණවුම සුරැකේ, bank details copy වේ, Invoice PDF එක download වේ.</small>
-</button>
-<div class="acts"><button class="btn x" id="closePay">Close</button></div>
+<small>පහත "Bank Details" බොත්තම Click කළ විට ඇණවුම සුරැකේ, bank details copy වේ, Invoice PDF එක download වේ.</small>
+</div>
+<div class="acts">
+<button class="btn bankbtn" id="bankBtn">🏦 Bank Details — Copy කර Invoice PDF Download කරන්න</button>
+<button class="btn x" id="closePay">Close</button>
+</div>
 </div></div>
 
 <div class="ov" id="infoOv"><div class="box">
