@@ -74,6 +74,12 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 .starbox label.chk{display:flex;gap:8px;align-items:center;margin:0;cursor:pointer;font-size:14px}
 .starbox input[type=checkbox]{width:auto}
 .memno{font:700 20px Oswald,sans-serif;color:var(--g);letter-spacing:1px}
+.pfx{display:flex;align-items:stretch;border:1px solid var(--mu);border-radius:8px;background:var(--card);overflow:hidden}
+.pfx:focus-within{outline:3px solid #b6f000;outline-offset:2px}
+.pfx .pf{display:flex;align-items:center;padding:0 12px;background:var(--inv);color:var(--tx);font:700 16px Oswald,sans-serif;letter-spacing:.5px;border-right:1px solid var(--mu);user-select:none;-webkit-user-select:none;cursor:default}
+.pfx input{border:0;border-radius:0;flex:1;min-width:0;background:transparent}
+.pfx input:focus-visible{outline:none}
+.hint.warn{color:var(--wbd);font-weight:600;line-height:1.6}
 :focus-visible{outline:3px solid #b6f000;outline-offset:2px}
 @media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -111,7 +117,7 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <div class="ov" id="formOv"><div class="box">
 <h2>ඔබගේ විස්තර</h2>
 <label for="cm">සාමාජික අංකය (කලින් ඇණවුම් කර ඇත්නම් පමණක්)</label>
-<div class="mrow"><input id="cm" placeholder="උදා: EH123456" autocapitalize="characters" autocomplete="off"><button class="btn" id="findMember" type="button">සොයන්න</button></div>
+<div class="mrow"><div class="pfx" style="flex:1"><span class="pf" aria-hidden="true">EH</span><input id="cm" type="text" inputmode="numeric" placeholder="123456" autocomplete="off" aria-label="සාමාජික අංකය (EH ට පසු ඉලක්කම් 6)"></div><button class="btn" id="findMember" type="button">සොයන්න</button></div>
 <p class="hint">අංකය ඇතුළත් කර "සොයන්න" ඔබන්න — නම, දුරකතනය, ලිපිනය ස්වයංක්‍රීයව පිරෙනු ඇත. අවශ්‍ය නම් වෙනස් කළ හැක. නව පාරිභෝගිකයෙකු නම් හිස්ව තබන්න; ඔබට අංකයක් ලැබෙනු ඇත.</p>
 <div class="sum" id="memInfo" style="display:none"></div>
 <div class="starbox" id="starBox" style="display:none">
@@ -119,7 +125,9 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
  <div id="starCalc" style="margin-top:6px"></div>
 </div>
 <label for="cn">නම</label><input id="cn" autocomplete="name">
-<label for="cp">දුරකතන අංකය</label><input id="cp" type="tel" autocomplete="tel">
+<label for="cp">WhatsApp දුරකතන අංකය</label>
+<div class="pfx"><span class="pf" aria-hidden="true">+94</span><input id="cp" type="tel" inputmode="numeric" placeholder="7XXXXXXXX" autocomplete="tel-national" aria-label="WhatsApp අංකය (+94 ට පසු, මුල 0 නැතිව)"></div>
+<p class="hint warn">⚠ WhatsApp අංකයක් පමණක් ඇතුළත් කරන්න. කරුණාකර මුල 0 ඉලක්කම නැතිව ඇතුළත් කරන්න (උදා: 0771234567 නම් 771234567 ලෙස). අංකය 7 න් ආරම්භ විය යුතු ය.</p>
 <label for="ca">ලිපිනය</label><textarea id="ca" rows="3" autocomplete="street-address"></textarea>
 <div class="acts" style="margin-top:14px"><button class="btn" id="confirm">OK</button><button class="btn x" id="closeForm">Cancel</button></div>
 </div></div>
@@ -291,25 +299,40 @@ function renderMember(){
  renderStars();
 }
 async function findMember(){
- const no=$("#cm").value.trim().toUpperCase();
- if(!no){toast("සාමාජික අංකය ඇතුළත් කරන්න");return}
+ const no=memFull();
+ if(!$("#cm").value){toast("සාමාජික අංකයේ EH ට පසු ඉලක්කම් 6 ඇතුළත් කරන්න");return}
+ if(!/^EH\d{6}$/.test(no)){toast("සාමාජික අංකය EH සමග ඉලක්කම් 6ක් විය යුතුය");return}
  if(!sb){toast("Supabase සකසා නැත");return}
  const b=$("#findMember");b.disabled=true;
  try{
   const {data,error}=await sb.rpc("get_member",{p_member_no:no});
   if(error)throw error;
   if(!data){member=null;renderMember();toast("එම සාමාජික අංකය හමු නොවීය");return}
-  member=data;$("#cm").value=data.member_no;
-  $("#cn").value=data.name||"";$("#cp").value=data.phone||"";$("#ca").value=data.address||"";
+  member=data;$("#cm").value=String(data.member_no).replace(/^EH/i,"");
+  $("#cn").value=data.name||"";$("#cp").value=toLocalPhone(data.phone);$("#ca").value=data.address||"";
   renderMember();toast("ඔබගේ විස්තර පුරවා ඇත. අවශ්‍ය නම් වෙනස් කරන්න");
  }catch(e){console.error(e);toast("සෙවීම අසාර්ථක විය. නැවත උත්සාහ කරන්න",3000)}
  finally{b.disabled=false}
 }
 $("#findMember").onclick=findMember;
 $("#cm").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();findMember()}});
+function memFull(){const d=$("#cm").value.trim();return d?"EH"+d:""}
+// සුරැකි දුරකතන අංකය (+947…, 947…, 07…) -> +94 ට පසු ඉලක්කම් 9
+function toLocalPhone(p){
+ let d=String(p||"").replace(/\D/g,"");
+ if(d.startsWith("94")&&d.length>9)d=d.slice(2);
+ d=d.replace(/^0+/,"");
+ return d.slice(0,9);
+}
 $("#cm").addEventListener("input",()=>{
- const v=$("#cm").value.trim().toUpperCase();
- if(member&&v!==member.member_no){member=null;$("#useStars").checked=false;renderMember()}});
+ const d=$("#cm").value.replace(/\D/g,"").slice(0,6);$("#cm").value=d;
+ if(member&&("EH"+d)!==member.member_no){member=null;$("#useStars").checked=false;renderMember()}});
+$("#cp").addEventListener("input",()=>{
+ let d=$("#cp").value.replace(/\D/g,"");
+ if(d.startsWith("94")&&d.length>9)d=d.slice(2);
+ d=d.replace(/^0+/,"");
+ if(d&&d[0]!=="7"){d="";toast("WhatsApp අංකය 7 න් ආරම්භ විය යුතුය (මුල 0 නැතිව)",2500)}
+ $("#cp").value=d.slice(0,9)});
 $("#useStars").addEventListener("change",renderStars);
 
 // step 1: Confirm Order -> customer details popup
@@ -318,16 +341,17 @@ $("#confirmOrder").onclick=()=>{
  $("#formOv").classList.add("on");
  renderMember();
  const saved_no=lsGet();
- if(!member&&!$("#cm").value&&saved_no){$("#cm").value=saved_no;findMember()}
+ if(!member&&!$("#cm").value&&saved_no){$("#cm").value=saved_no.replace(/^EH/i,"");findMember()}
  else $("#cn").focus()};
 $("#closeForm").onclick=()=>$("#formOv").classList.remove("on");
 
 // step 2: OK -> orange notice popup
 $("#confirm").onclick=()=>{
- const n=$("#cn").value.trim(),p=$("#cp").value.trim(),a=$("#ca").value.trim(),m=$("#cm").value.trim();
+ const n=$("#cn").value.trim(),pd=$("#cp").value.trim(),a=$("#ca").value.trim(),m=$("#cm").value.trim();
  if(m&&!member){toast("සාමාජික අංකය තහවුරු කිරීමට \"සොයන්න\" ඔබන්න, නැතහොත් එය හිස් කරන්න",3000);return}
- if(!n||!a||!p){toast("නම, දුරකතන අංකය, ලිපිනය සම්පූර්ණ කරන්න");return}
- if(p.replace(/\D/g,"").length<9){toast("දුරකතන අංකය නිවැරදි දැයි පරීක්ෂා කරන්න");return}
+ if(!n||!a||!pd){toast("නම, WhatsApp අංකය, ලිපිනය සම්පූර්ණ කරන්න");return}
+ if(!/^7\d{8}$/.test(pd)){toast("WhatsApp අංකය 7 න් ආරම්භ වන ඉලක්කම් 9ක් විය යුතුය (මුල 0 නැතිව)",3500);$("#cp").focus();return}
+ const p="+94"+pd;
  cust={n,a,p,m:member?member.member_no:"",stars:starUse()};
  const t=totals(),pay=t.tot-cust.stars;
  $("#paySum").innerHTML=`${member?`සාමාජික අංකය: <b>${esc(member.member_no)}</b><br>`:`ඔබට නව සාමාජික අංකයක් ලැබෙනු ඇත (ඇණවුම සුරැකූ පසු පෙන්වයි)<br>`}`+
