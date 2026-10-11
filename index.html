@@ -67,6 +67,13 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;max-width:90%;text-align:center}
 .toast.on{opacity:1}
 #pdfInv{position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#111;padding:28px;font-family:"Noto Sans Sinhala",sans-serif}
+.mrow{display:flex;gap:8px;align-items:stretch}
+.mrow input{flex:1}
+.hint{font-size:12px;color:var(--mu);margin:4px 0 0}
+.starbox{background:var(--wbg);border:1.5px solid var(--wbd);border-radius:8px;padding:10px 12px;margin:12px 0;font-size:14px;line-height:1.8}
+.starbox label.chk{display:flex;gap:8px;align-items:center;margin:0;cursor:pointer;font-size:14px}
+.starbox input[type=checkbox]{width:auto}
+.memno{font:700 20px Oswald,sans-serif;color:var(--g);letter-spacing:1px}
 :focus-visible{outline:3px solid #b6f000;outline-offset:2px}
 @media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -86,6 +93,7 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <li>ඇණවුම් කර දින 5-7 අතර කාලයේ දී පොත් නිවසට ම ලැබෙනු ඇත</li>
 <li>හදිසි ස්වභාවික අපදා ආදි අවස්ථාවල ඇණවුමේ භාරදීම ප්‍රමාද විය හැක</li>
 <li>ඇණවුම් කළ පොත් අනටම් ලැබෙන තුරු ගෙවූ මුදලට වගකියනු ලැබේ</li>
+<li>රු.100ක් ගෙවන සෑම අවස්ථාවකට ම ඔබට රු.1ක Star එකක් ලැබෙන අතර, ඊළඟ ඇණවුමේ දී ඒවා මුදලක් ලෙස අඩු කරගත හැකි ය</li>
 </ul></footer>
 </main>
 
@@ -102,6 +110,14 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <!-- Popup 1: customer details (green) -->
 <div class="ov" id="formOv"><div class="box">
 <h2>ඔබගේ විස්තර</h2>
+<label for="cm">සාමාජික අංකය (කලින් ඇණවුම් කර ඇත්නම් පමණක්)</label>
+<div class="mrow"><input id="cm" placeholder="උදා: EH123456" autocapitalize="characters" autocomplete="off"><button class="btn" id="findMember" type="button">සොයන්න</button></div>
+<p class="hint">අංකය ඇතුළත් කර "සොයන්න" ඔබන්න — නම, දුරකතනය, ලිපිනය ස්වයංක්‍රීයව පිරෙනු ඇත. අවශ්‍ය නම් වෙනස් කළ හැක. නව පාරිභෝගිකයෙකු නම් හිස්ව තබන්න; ඔබට අංකයක් ලැබෙනු ඇත.</p>
+<div class="sum" id="memInfo" style="display:none"></div>
+<div class="starbox" id="starBox" style="display:none">
+ <label class="chk"><input type="checkbox" id="useStars"><span id="starTxt"></span></label>
+ <div id="starCalc" style="margin-top:6px"></div>
+</div>
 <label for="cn">නම</label><input id="cn" autocomplete="name">
 <label for="cp">දුරකතන අංකය</label><input id="cp" type="tel" autocomplete="tel">
 <label for="ca">ලිපිනය</label><textarea id="ca" rows="3" autocomplete="street-address"></textarea>
@@ -112,6 +128,7 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <div class="ov" id="payOv"><div class="box warn">
 <h2>වැදගත් දැනුම්දීමක්</h2>
 <p class="msg">හිතවත් පාරිභෝගිකය, CoD පහසුකම දැනට අත්හිටුවා ඇත. ඇතැම් ඇනවුම් භාරනොගෙන හරවා එවීම නිසා එහි මූල්‍ය පාඩුව අපට දැරීමට සිදුවීම නිසා එසේ අහෝසි කර ඇත. ඒ නිසා ඔබ විසින් මුදල් ගෙවා පොත් ලබා ගතයුතු ය. ඇනවුම් කළ පොත් ඔබ අතට ලැබෙන තුරු ම ගෙවූ මුදලට අප වගකියනු ලැබේ. පහතින් 'bank detail' මත Click කිරීමෙන් බැංකු ගිණුම් විස්තර පිටපත් කරගැනීමටත් අදාළ විස්තර හා ඔබගේ Invoice එක PDF එකක් ලෙස Download කරගැනීමටත් හැකි ය.</p>
+<div class="sum" id="paySum"></div>
 <div class="bank">
 <div class="h">🏦 Bank Details</div>
 🏦 PEOPLE'S BANK - Mathugama<br>💳 A/C: 070-2-001-6-23-28-309<br>👤 UKDA KOSALA<br><br>
@@ -136,11 +153,11 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 /* ===== Supabase සැකසුම් — ඔබගේ project එකේ අගයන් මෙතැන දමන්න ===== */
 const SUPABASE_URL="https://jcijglwpkfluyzrltimk.supabase.co/", SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjaWpnbHdwa2ZsdXl6cmx0aW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MzU3OTUsImV4cCI6MjA4MjQxMTc5NX0.dvT8OiyVEiYn_DhkMakmSq1Vvr4REDr0kYPnyqCtWHs";
 // anon (public) key පමණි — service_role key කිසිවිටෙක මෙතැනට නොදමන්න
-const ORDERS_TABLE="orders";
 let sb=null;
 try{ if(window.supabase && !SUPABASE_URL.startsWith("YOUR_")) sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY) }catch(_){}
 
 const DISCOUNT=0.10;
+const STAR_UNIT=100;   // රු.100ක් ගෙවන විට 1 Star (අගය රු.1) — supabase-setup.sql හි අගයත් මේ හා සමාන විය යුතු ය
 const FREE_PDF="https://drive.google.com/uc?export=download&id=1hUyV97t2X_vdOpMRNG10i_kn8s7FQjWR";
 const BANK_TEXT="🏦 PEOPLE'S BANK - Mathugama\n💳 A/C: 070-2-001-6-23-28-309\n👤 UKDA KOSALA\n\n🏦 BANK OF CEYLON - Kalutara\n💳 A/C: 89-32-36-00\n👤 RG LAKMINI";
 
@@ -199,11 +216,14 @@ free:{label:"BOOK FREE",free:true,items:[
   ["උසස් පෙළ යුරෝපා ඉතිහාසය සිතියම් අභ්‍යාස පොත",0,"","https://drive.google.com/file/d/1861lsCrkh2pmY_dPfNLIr_c59AD3D8v2/view?usp=drive_link"]]},
 };
 
-const cart={}; let inv=newInv(), cust=null, saved=false, busy=false;
+const cart={}; let inv=newInv(), cust=null, saved=false, busy=false, member=null, result=null;
 function newInv(){return "EDU"+Math.floor(100000+Math.random()*900000)}
-const $=s=>document.querySelector(s), fmt=n=>n.toLocaleString("en-US");
+const $=s=>document.querySelector(s), fmt=n=>Number(n).toLocaleString("en-US");
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(m,ms){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),ms||1800)}
+const LS="eh_member_no";
+function lsGet(){try{return localStorage.getItem(LS)||""}catch(_){return ""}}
+function lsSet(v){try{localStorage.setItem(LS,v)}catch(_){}}
 
 // render shop
 $("#shop").innerHTML=Object.entries(sets).map(([id,s])=>`<section id="${id}" class="${s.free?"free":""}"><div class="side">${s.label}</div><div class="grid">`+
@@ -247,41 +267,103 @@ $("#closeCart").onclick=()=>$("#cartOv").classList.remove("on");
 $("#rows").addEventListener("click",e=>{const b=e.target.closest("[data-k]");if(!b)return;
  const c=cart[b.dataset.k];c.qty+=+b.dataset.d;if(c.qty<1)delete cart[b.dataset.k];saved=false;render()});
 
+/* ===== සාමාජික අංකය / Star ===== */
+function starUse(){
+ if(!member||!$("#useStars").checked)return 0;
+ return Math.max(0,Math.min(member.stars,totals().tot));
+}
+function renderStars(){
+ const box=$("#starBox");
+ if(!member||!(member.stars>0)){box.style.display="none";$("#useStars").checked=false;return}
+ const t=totals(),maxUse=Math.min(member.stars,t.tot);
+ box.style.display="block";
+ $("#starTxt").textContent=`ඔබට Star ${fmt(member.stars)}ක් ඇත (රු.${fmt(member.stars)}). මෙවර භාවිත කරමුද? (උපරිම Star ${fmt(maxUse)}ක්)`;
+ const use=starUse(),pay=t.tot-use;
+ $("#starCalc").innerHTML=use>0
+  ?`වට්ටම් පසු මුදල: Rs.${fmt(t.tot)}<br>Star වට්ටම: -Rs.${fmt(use)} (Star ${fmt(use)})<br><b>ඔබ ගෙවිය යුතු මුදල: Rs.${fmt(pay)}</b><br>මෙම ඇණවුමෙන් නව Star ${fmt(Math.floor(pay/STAR_UNIT))}ක් ලැබේ`
+  :`Star භාවිත නොකළහොත් ගෙවිය යුතු මුදල: <b>Rs.${fmt(t.tot)}</b>`;
+}
+function renderMember(){
+ const el=$("#memInfo");
+ if(!member){el.style.display="none";renderStars();return}
+ el.style.display="block";
+ el.innerHTML=`✅ සාමාජික අංකය: <b>${esc(member.member_no)}</b><br>මෙතෙක් ඇණවුම්: <b>${fmt(member.order_count)}</b> | මෙතෙක් ගෙවූ මුදල: <b>Rs.${fmt(member.total_spent)}</b> | Stars: <b>${fmt(member.stars)}</b>`;
+ renderStars();
+}
+async function findMember(){
+ const no=$("#cm").value.trim().toUpperCase();
+ if(!no){toast("සාමාජික අංකය ඇතුළත් කරන්න");return}
+ if(!sb){toast("Supabase සකසා නැත");return}
+ const b=$("#findMember");b.disabled=true;
+ try{
+  const {data,error}=await sb.rpc("get_member",{p_member_no:no});
+  if(error)throw error;
+  if(!data){member=null;renderMember();toast("එම සාමාජික අංකය හමු නොවීය");return}
+  member=data;$("#cm").value=data.member_no;
+  $("#cn").value=data.name||"";$("#cp").value=data.phone||"";$("#ca").value=data.address||"";
+  renderMember();toast("ඔබගේ විස්තර පුරවා ඇත. අවශ්‍ය නම් වෙනස් කරන්න");
+ }catch(e){console.error(e);toast("සෙවීම අසාර්ථක විය. නැවත උත්සාහ කරන්න",3000)}
+ finally{b.disabled=false}
+}
+$("#findMember").onclick=findMember;
+$("#cm").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();findMember()}});
+$("#cm").addEventListener("input",()=>{
+ const v=$("#cm").value.trim().toUpperCase();
+ if(member&&v!==member.member_no){member=null;$("#useStars").checked=false;renderMember()}});
+$("#useStars").addEventListener("change",renderStars);
+
 // step 1: Confirm Order -> customer details popup
 $("#confirmOrder").onclick=()=>{
  if(!count()){toast("Cart එක හිස්ය");return}
- $("#formOv").classList.add("on");$("#cn").focus()};
+ $("#formOv").classList.add("on");
+ renderMember();
+ const saved_no=lsGet();
+ if(!member&&!$("#cm").value&&saved_no){$("#cm").value=saved_no;findMember()}
+ else $("#cn").focus()};
 $("#closeForm").onclick=()=>$("#formOv").classList.remove("on");
 
 // step 2: OK -> orange notice popup
 $("#confirm").onclick=()=>{
- const n=$("#cn").value.trim(),p=$("#cp").value.trim(),a=$("#ca").value.trim();
+ const n=$("#cn").value.trim(),p=$("#cp").value.trim(),a=$("#ca").value.trim(),m=$("#cm").value.trim();
+ if(m&&!member){toast("සාමාජික අංකය තහවුරු කිරීමට \"සොයන්න\" ඔබන්න, නැතහොත් එය හිස් කරන්න",3000);return}
  if(!n||!a||!p){toast("නම, දුරකතන අංකය, ලිපිනය සම්පූර්ණ කරන්න");return}
  if(p.replace(/\D/g,"").length<9){toast("දුරකතන අංකය නිවැරදි දැයි පරීක්ෂා කරන්න");return}
- cust={n,a,p};
+ cust={n,a,p,m:member?member.member_no:"",stars:starUse()};
+ const t=totals(),pay=t.tot-cust.stars;
+ $("#paySum").innerHTML=`${member?`සාමාජික අංකය: <b>${esc(member.member_no)}</b><br>`:`ඔබට නව සාමාජික අංකයක් ලැබෙනු ඇත (ඇණවුම සුරැකූ පසු පෙන්වයි)<br>`}`+
+  `වට්ටම් පසු මුදල: Rs.${fmt(t.tot)}`+(cust.stars?`<br>Star වට්ටම: -Rs.${fmt(cust.stars)}`:"")+`<br>ඔබ ගෙවිය යුතු මුදල: <b>Rs.${fmt(pay)}</b>`;
  $("#formOv").classList.remove("on");$("#cartOv").classList.remove("on");$("#payOv").classList.add("on");
 };
 $("#closePay").onclick=()=>{
  $("#payOv").classList.remove("on");
- if(saved){for(const k in cart)delete cart[k];inv=newInv();cust=null;saved=false;$("#cn").value=$("#cp").value=$("#ca").value="";upd()}
+ if(saved){for(const k in cart)delete cart[k];inv=newInv();cust=null;saved=false;result=null;member=null;
+  $("#cn").value=$("#cp").value=$("#ca").value=$("#cm").value="";$("#useStars").checked=false;renderMember();upd()}
 };
 
 // bank detail click: save + copy + PDF
 async function saveOrder(){
  if(!sb)throw new Error("Supabase සකසා නැත");
  const t=totals();
- const {error}=await sb.from(ORDERS_TABLE).insert({
-  invoice_no:inv,customer_name:cust.n,phone:cust.p,address:cust.a,
-  items:t.items.map(c=>({name:c.name,qty:c.qty,price:c.price})),
-  subtotal:t.sub,discount:t.dis,total:t.tot});
+ const {data,error}=await sb.rpc("place_order",{
+  p_invoice:inv,p_member_no:cust.m||null,p_name:cust.n,p_phone:cust.p,p_address:cust.a,
+  p_items:t.items.map(c=>({name:c.name,qty:c.qty,price:c.price})),
+  p_subtotal:t.sub,p_discount:t.dis,p_use_stars:cust.stars});
  if(error)throw error;
+ if(!data)throw new Error("හිස් ප්‍රතිචාරයක්");
+ result=data;
+ lsSet(result.member_no);
+ $("#paySum").innerHTML=`ඔබගේ සාමාජික අංකය: <span class="memno">${esc(result.member_no)}</span> (මතක තබාගන්න)<br>`+
+  `මෙය ඔබගේ <b>${fmt(result.order_no)}</b> වන ඇණවුමයි | මෙතෙක් ගෙවූ මුදල: <b>Rs.${fmt(result.total_spent)}</b><br>`+
+  (result.stars_used?`Star වට්ටම: -Rs.${fmt(result.star_discount)}<br>`:"")+
+  `ඔබ ගෙවිය යුතු මුදල: <b>Rs.${fmt(result.total)}</b><br>`+
+  `මෙම ඇණවුමෙන් ලැබෙන Star: <b>${fmt(result.stars_earned)}</b> | දැනට ඇති Star: <b>${fmt(result.stars_balance)}</b>`;
 }
 function copyText(text){
  const fb=()=>{const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(_){}t.remove()};
  try{navigator.clipboard.writeText(text).catch(fb)}catch(_){fb()}
 }
 function invoiceHTML(){
- const t=totals(),now=new Date(),p=n=>String(n).padStart(2,"0");
+ const t=totals(),r=result,now=new Date(),p=n=>String(n).padStart(2,"0");
  const d=`${p(now.getDate())}/${p(now.getMonth()+1)}/${now.getFullYear()} ${p(now.getHours())}:${p(now.getMinutes())}`;
  const td="padding:7px 6px;border-bottom:1px solid #ddd;font-size:14px";
  return `<div style="border-bottom:4px solid #1f9d43;padding-bottom:10px;margin-bottom:14px">
@@ -289,9 +371,15 @@ function invoiceHTML(){
  <div style="font-size:13px;color:#444">urc.eduhelp@gmail.com | +94716637804 / 0701551279</div></div>
  <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:12px"><div><b>INVOICE</b><br>Invoice #: ${inv}<br>දිනය: ${d}</div>
  <div style="text-align:right"><b>${esc(cust.n)}</b><br>${esc(cust.p)}<br>${esc(cust.a).replace(/\n/g,"<br>")}</div></div>
+ <div style="background:#f1f8f3;border:1.5px solid #1f9d43;border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.8;margin-bottom:12px">
+ <b>සාමාජික අංකය: ${esc(r.member_no)}</b> &nbsp;|&nbsp; මෙය ඔබගේ <b>${fmt(r.order_no)}</b> වන ඇණවුමයි<br>
+ මෙම ඇණවුම ඇතුළුව මෙතෙක් අප වෙත ගෙවූ මුදල: <b>Rs.${fmt(r.total_spent)}</b></div>
  <table style="width:100%;border-collapse:collapse"><tr style="background:#1f9d43;color:#fff;font-size:13px"><th style="padding:7px 6px;text-align:left">#</th><th style="padding:7px 6px;text-align:left">පොත</th><th style="padding:7px 6px">Qty</th><th style="padding:7px 6px;text-align:right">Rs.</th></tr>
  ${t.items.map((c,i)=>`<tr><td style="${td}">${i+1}</td><td style="${td}">${esc(c.name)}</td><td style="${td};text-align:center">${c.qty}</td><td style="${td};text-align:right">${fmt(c.price*c.qty)}</td></tr>`).join("")}</table>
- <div style="text-align:right;font-size:14px;line-height:1.9;margin:12px 0">උප එකතුව: Rs.${fmt(t.sub)}<br>වට්ටම: -Rs.${fmt(t.dis)}<br><b style="font-size:17px;color:#137a31">ගෙවිය යුතු මුදල: Rs.${fmt(t.tot)}</b></div>
+ <div style="text-align:right;font-size:14px;line-height:1.9;margin:12px 0">උප එකතුව: Rs.${fmt(r.subtotal)}<br>වට්ටම: -Rs.${fmt(r.discount)}<br>${r.stars_used?`Star වට්ටම (Star ${fmt(r.stars_used)}): -Rs.${fmt(r.star_discount)}<br>`:""}<b style="font-size:17px;color:#137a31">ගෙවිය යුතු මුදල: Rs.${fmt(r.total)}</b></div>
+ <div style="border:1.5px solid #e67e00;border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.8;margin-bottom:10px">
+ ⭐ මෙම ඇණවුමෙන් ලැබෙන Star: <b>${fmt(r.stars_earned)}</b> &nbsp;|&nbsp; ඔබට දැනට ඇති Star: <b>${fmt(r.stars_balance)}</b> (රු.${fmt(r.stars_balance)})<br>
+ <span style="font-size:12.5px;color:#555">ඊළඟ ඇණවුමේ දී ඔබගේ සාමාජික අංකය ඇතුළත් කර මෙම Star භාවිත කළ හැක.</span></div>
  <div style="border:1.5px solid #1f9d43;border-radius:8px;padding:10px;font-size:13.5px;line-height:1.8">
  <b>💳 ගෙවීම් විස්තර</b><br>🏦 PEOPLE'S BANK - Mathugama | A/C: 070-2-001-6-23-28-309 | UKDA KOSALA<br>🏦 BANK OF CEYLON - Kalutara | A/C: 89-32-36-00 | RG LAKMINI</div>
  <div style="font-size:13px;line-height:1.8;margin-top:10px">✅ Online Transfer කළ පසු bank message එක forward කරන්න<br>✅ Cash deposit කළ නම් receipt එකේ photo එක එවන්න<br>✅ Payment confirm වූ පසු delivery arrange කරනවා<br>📱 WhatsApp: +94716637804 | ☎️ 0701551279</div>
@@ -311,10 +399,12 @@ $("#bankBtn").onclick=async()=>{
  busy=true;$("#bankBtn").disabled=true;
  copyText(BANK_TEXT);                       // 1) bank details copy (user gesture තුළ ම)
  try{
-  if(!saved){await saveOrder();saved=true}  // 2) Supabase වෙත සුරැකීම
+  if(!saved){await saveOrder();saved=true}  // 2) Supabase වෙත සුරැකීම (සාමාජික අංකය / Star ද server එකේ දී)
  }catch(err){
   console.error(err);busy=false;$("#bankBtn").disabled=false;
-  toast("ඇණවුම සුරැකීම අසාර්ථක විය. නැවත Click කර උත්සාහ කරන්න.",3500);return}
+  const msg=String(err&&err.message||"");
+  toast(msg.includes("MEMBER_NOT_FOUND")?"සාමාජික අංකය හමු නොවීය. පිටුව නැවත පූරණය කර පරීක්ෂා කරන්න."
+        :"ඇණවුම සුරැකීම අසාර්ථක විය. නැවත Click කර උත්සාහ කරන්න.",3500);return}
  try{await makePDF()}                       // 3) Invoice PDF download
  catch(err){console.error(err);toast("ඇණවුම සුරැකුණා, නමුත් PDF සෑදීම අසාර්ථක විය.",3500);busy=false;$("#bankBtn").disabled=false;return}
  toast("ඇණවුම සුරැකුණා ✔ Bank details copy වුණා ✔ Invoice PDF එක download වුණා ✔",3500);
