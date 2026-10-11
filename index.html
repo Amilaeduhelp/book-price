@@ -5,11 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EDUHELP BOOK STORE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;800&family=Oswald:wght@500;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-:root{--g:#1f9d43;--g2:#137a31;--bg:#fff;--tx:#111;--mu:#555;--card:#fff;--bd:#1f9d43;--ad:#c9cbcf;--tab:#151515;--tabtx:#c8f000;--inv:#f6f8f6;
+:root{--g:#1f9d43;--g2:#137a31;--bg:#fff;--tx:#111;--mu:#555;--card:#fff;--bd:#1f9d43;--ad:#c9cbcf;--tab:#151515;--tabtx:#c8f000;--inv:#f6f8f6;--wbg:#fff3df;--wbd:#e67e00;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101412;--tx:#eef2ee;--mu:#a8b2a8;--card:#171d19;--ad:#2a2f2c;--tab:#000;--inv:#171d19}}
-:root[data-theme="dark"]{--bg:#101412;--tx:#eef2ee;--mu:#a8b2a8;--card:#171d19;--ad:#2a2f2c;--tab:#000;--inv:#171d19}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101412;--tx:#eef2ee;--mu:#a8b2a8;--card:#171d19;--ad:#2a2f2c;--tab:#000;--inv:#171d19;--wbg:#2b1d08}}
+:root[data-theme="dark"]{--bg:#101412;--tx:#eef2ee;--mu:#a8b2a8;--card:#171d19;--ad:#2a2f2c;--tab:#000;--inv:#171d19;--wbg:#2b1d08}
 html{scroll-padding-top:calc(60px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans Sinhala",system-ui,sans-serif}
@@ -40,17 +43,27 @@ footer ul{padding-left:20px;font-size:14px;line-height:1.7;margin:20px 0}
 .ov.on{display:flex}
 .box{background:var(--bg);border-radius:12px;width:100%;max-width:640px;padding:16px;margin:auto;border:1.5px solid var(--g)}
 .box h2{margin:0 0 10px;color:var(--g);font-size:20px}
+.box.warn{background:var(--wbg);border:3px solid var(--wbd)}
+.box.warn h2{color:var(--wbd)}
 .row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--bd);font-size:14px}
 .row span{flex:1}
 .q{width:26px;height:26px;border-radius:50%;border:1px solid var(--g);background:none;color:var(--tx);cursor:pointer}
-pre{background:var(--inv);border:1px solid var(--bd);border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word;font:13px/1.55 "Noto Sans Sinhala",monospace;margin:12px 0}
-.acts{display:flex;gap:8px;flex-wrap:wrap}
+.sum{background:var(--inv);border:1px solid var(--bd);border-radius:8px;padding:12px;margin:12px 0;font-size:14px;line-height:1.8}
+.sum b{color:var(--g)}
 .btn{border:0;border-radius:8px;padding:10px 16px;font:600 14px "Noto Sans Sinhala";cursor:pointer;color:#fff;background:var(--g)}
-.btn.wa{background:#25d366;color:#053}.btn.x{background:transparent;color:var(--tx);border:1px solid var(--mu)}
+.btn.x{background:transparent;color:var(--tx);border:1px solid var(--mu)}
+.btn:disabled{opacity:.6;cursor:wait}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.bank{display:block;width:100%;text-align:left;margin:14px 0;padding:14px;border:2px dashed var(--wbd);border-radius:10px;background:var(--card);color:var(--tx);font:14px/1.7 "Noto Sans Sinhala";cursor:pointer}
+.bank:disabled{opacity:.6;cursor:wait}
+.bank .h{font-weight:800;color:var(--wbd);margin-bottom:4px}
+.bank small{display:block;color:var(--mu);margin-top:6px}
+.msg{line-height:1.9;font-size:14.5px;margin:0}
 label{display:block;font-size:13px;margin:10px 0 4px}
 input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--mu);background:var(--card);color:var(--tx);font:14px "Noto Sans Sinhala"}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;max-width:90%;text-align:center}
 .toast.on{opacity:1}
+#pdfInv{position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#111;padding:28px;font-family:"Noto Sans Sinhala",sans-serif}
 :focus-visible{outline:3px solid #b6f000;outline-offset:2px}
 @media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -73,54 +86,67 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 </ul></footer>
 </main>
 
+<!-- Cart -->
 <div class="ov" id="cartOv"><div class="box">
-<h2>Your Cart / Invoice</h2>
+<h2>Your Cart</h2>
 <div id="rows"></div>
-<pre id="inv"></pre>
+<div class="sum" id="sum"></div>
 <div class="acts">
-<button class="btn" data-go="copy">Copy Invoice</button>
-<button class="btn wa" data-go="wa">Send via WhatsApp</button>
+<button class="btn" id="confirmOrder">Confirm Order</button>
 <button class="btn x" id="closeCart">Close</button>
 </div></div></div>
 
+<!-- Popup 1: customer details (green) -->
 <div class="ov" id="formOv"><div class="box">
 <h2>ඔබගේ විස්තර</h2>
 <label for="cn">නම</label><input id="cn" autocomplete="name">
-<label for="ca">ලිපිනය</label><textarea id="ca" rows="3" autocomplete="street-address"></textarea>
 <label for="cp">දුරකතන අංකය</label><input id="cp" type="tel" autocomplete="tel">
-<div class="acts" style="margin-top:14px"><button class="btn" id="confirm">Continue</button><button class="btn x" id="closeForm">Cancel</button></div>
+<label for="ca">ලිපිනය</label><textarea id="ca" rows="3" autocomplete="street-address"></textarea>
+<div class="acts" style="margin-top:14px"><button class="btn" id="confirm">OK</button><button class="btn x" id="closeForm">Cancel</button></div>
 </div></div>
+
+<!-- Popup 2: notice + bank details (orange) -->
+<div class="ov" id="payOv"><div class="box warn">
+<h2>වැදගත් දැනුම්දීමක්</h2>
+<p class="msg">හිතවත් පාරිභෝගිකය, CoD පහසුකම දැනට අත්හිටුවා ඇත. ඇතැම් ඇනවුම් භාරනොගෙන හරවා එවීම නිසා එහි මූල්‍ය පාඩුව අපට දැරීමට සිදුවීම නිසා එසේ අහෝසි කර ඇත. ඒ නිසා ඔබ විසින් මුදල් ගෙවා පොත් ලබා ගතයුතු ය. ඇනවුම් කළ පොත් ඔබ අතට ලැබෙන තුරු ම ගෙවූ මුදලට අප වගකියනු ලැබේ. පහතින් 'bank detail' මත Click කිරීමෙන් බැංකු ගිණුම් විස්තර පිටපත් කරගැනීමටත් අදාළ විස්තර හා ඔබගේ Invoice එක PDF එකක් ලෙස Download කරගැනීමටත් හැකි ය.</p>
+<button class="bank" id="bankBtn">
+<div class="h">🏦 Bank Details (Click කරන්න)</div>
+🏦 PEOPLE'S BANK - Mathugama<br>💳 A/C: 070-2-001-6-23-28-309<br>👤 UKDA KOSALA<br><br>
+🏦 BANK OF CEYLON - Kalutara<br>💳 A/C: 89-32-36-00<br>👤 RG LAKMINI
+<small>Click කළ විට ඇණවුම සුරැකේ, bank details copy වේ, Invoice PDF එක download වේ.</small>
+</button>
+<div class="acts"><button class="btn x" id="closePay">Close</button></div>
+</div></div>
+
 <div class="ov" id="infoOv"><div class="box">
 <h2 id="infoT"></h2>
 <p id="infoD" style="white-space:pre-line;line-height:1.8;margin:0 0 14px"></p>
 <div class="acts"><button class="btn x" id="infoClose">Close</button></div>
 </div></div>
 <div class="toast" id="toast"></div>
+<div id="pdfInv" aria-hidden="true"></div>
 
 <script>
-const DISCOUNT=0.10, WA="94716637804";
-// Free කොටසේ DOWNLOAD PDF බොත්තම් සියල්ලට පොදු Link එක
+/* ===== Supabase සැකසුම් — ඔබගේ project එකේ අගයන් මෙතැන දමන්න ===== */
+const SUPABASE_URL="https://jcijglwpkfluyzrltimk.supabase.co/", SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjaWpnbHdwa2ZsdXl6cmx0aW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MzU3OTUsImV4cCI6MjA4MjQxMTc5NX0.dvT8OiyVEiYn_DhkMakmSq1Vvr4REDr0kYPnyqCtWHs";
+// anon (public) key පමණි — service_role key කිසිවිටෙක මෙතැනට නොදමන්න
+const ORDERS_TABLE="orders";
+let sb=null;
+try{ if(window.supabase && !SUPABASE_URL.startsWith("YOUR_")) sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY) }catch(_){}
+
+const DISCOUNT=0.10;
 const FREE_PDF="https://drive.google.com/uc?export=download&id=1hUyV97t2X_vdOpMRNG10i_kn8s7FQjWR";
-/* Sample Link එකතු කිරීම:
-   පහත samples ලැයිස්තුවට  {n:"නම", u:"Google Drive Link"}  ලෙස පේළියක් දමන්න. */
+const BANK_TEXT="🏦 PEOPLE'S BANK - Mathugama\n💳 A/C: 070-2-001-6-23-28-309\n👤 UKDA KOSALA\n\n🏦 BANK OF CEYLON - Kalutara\n💳 A/C: 89-32-36-00\n👤 RG LAKMINI";
+
+/* Sample: {n:"නම", u:"Google Drive Link"} */
 const samples=[
   {n:"යුරෝපා ඉතිහාස සාරය", u:"https://drive.google.com/file/d/1NKj7KaqF4lrgKFVmG2jiOIkdJOPcburb/view?usp=drive_link"},
   {n:"යුරෝපා ඉතිහාසය", u:"https://drive.google.com/file/d/12Igg7VBCr1AvcVWu4Y3o3Xqk5_YN9EJd/view?usp=sharing"},
   {n:"ලංකා ඉතිහාසය", u:"https://drive.google.com/file/d/1DvG6akaAz6hgBXVrQm5u433rNXM9Nksd/view?usp=sharing"},
   {n:"ඉන්දියා ඉතිහාසය", u:"https://drive.google.com/file/d/1-jKIO0_vAY1vefEBZyKws5rJr2suqZt1/view?usp=sharing"}
 ];
-/* පොත් වෙනස් කිරීම:
-   - පොතක් එකතු කිරීමට: අදාළ කොටසේ items ලැයිස්තුවට  ["පොතේ නම",මිල]  පේළියක් දමන්න.
-   - මිල/නම වෙනස් කිරීමට: එම පේළියේම අගය වෙනස් කරන්න.
-   - ඉවත් කිරීමට: එම පේළිය මකන්න.
-   - "විස්තර බලන්න" සඳහා විස්තරය: පේළියට තුන්වන අගයක් එකතු කරන්න.
-     උදා: ["ලංකා ඉතිහාසය-1",1200,"පිටු 320\nනව සංස්කරණය"]   (\n = අලුත් පේළියක්)
-   - unik Link එකක් (Maps/MSs වැනි) එකතු කිරීමට: පේළියට හතරවන අගයක් එකතු කරන්න.
-     විස්තරයක් නැත්නම් තුන්වන අගය "" ලෙස තබන්න.
-     උදා: ["යුරෝපා සිතියම-1",1200,"","https://drive.google.com/....view?usp=drive_link"]
-     Link එකක් තවම නැති items වල "--add link here--" ලෙසම තබන්න - එය click කළ විට
-     "link එකක් තවම එකතු කර නැත" කියා පණිවිඩයක් පෙන්වයි.
-   පොත් නමේ අගට "-1", "-2" වැනි අංකයක් තිබුණොත් එය කාඩ් එකේ "කොටස" ලෙස පෙන්වයි. */
+/* items: ["නම",මිල,"විස්තරය","link"]  — නමේ අගට "-1","-2" තිබුණොත් "කොටස" ලෙස පෙන්වයි.
+   Link තවම නැත්නම් "--add link here--" ලෙස තබන්න. */
 const sets={
  books:{label:"BOOK",items:[
  ["ලංකා ඉතිහාසය-1",1600,"උසස් පෙළ 12 ශ්‍රේණිය විෂය නිර්දේශය අනුව සකසා තිබේ"],
@@ -144,31 +170,34 @@ papers:{label:"PAPERS",items:[
   ["13 ශ්‍රේණිය පළමු වාරය-ඉන්දියා ඉතිහාසය-MCQ පිළිතුර සමග",1000],
   ["13 ශ්‍රේණිය පළමු වාරය-ලංකා ඉතිහාසය-MCQ පිළිතුර සමග",1000]]},
  maps:{label:"MAPS FREE",free:true,items:[
-  ["සාමාන්‍ය පෙළ (ලංකා සිතියම)",00,"","https://drive.google.com/file/d/1hUyV97t2X_vdOpMRNG10i_kn8s7FQjWR/view?usp=sharing"],
-  ["සාමාන්‍ය පෙළ(සම්පූර්ණ ලෝක සිතියම)",00,"","https://drive.google.com/file/d/1G42A_aj3wb76sCyQETTmKc_UAQSEB1WJ/view?usp=sharing"],
-  ["සාමාන්‍ය පෙළ (යුරේසියා සිතියම)",00,"","https://drive.google.com/file/d/1m5_DM2eStcfhunN0Q4hmlY8Tpvha2ARJ/view?usp=sharing"],
-  ["උසස් පෙළ (යුරෝපා සිතියම-කළු මුහුද දක්වා)",00,"","https://drive.google.com/file/d/1m5_DM2eStcfhunN0Q4hmlY8Tpvha2ARJ/view?usp=sharing"],
-  ["උසස් පෙළ (යුරෝපා සිතියම-කැස්පියන් මුහුද දක්වා)",00,"","https://drive.google.com/file/d/1DhEz4XLOXbmoMnXmOvmITiWG7JM2EQsE/view?usp=sharing"],
-  ["උසස් පෙළ (ඉන්දියා සිතියම)",00,"","https://drive.google.com/file/d/1sbnrZENSVpd9yj4why2hQwYrhTKU9Zk2/view?usp=sharing"],
-  ["උසස් පෙළ (ලංකා සිතියම)",00,"","https://drive.google.com/file/d/1nttZpMikSVxSp6YYu4H0keOD_BEOIXVU/view?usp=sharing"]]},
+  ["සාමාන්‍ය පෙළ (ලංකා සිතියම)",0,"","https://drive.google.com/file/d/1hUyV97t2X_vdOpMRNG10i_kn8s7FQjWR/view?usp=sharing"],
+  ["සාමාන්‍ය පෙළ(සම්පූර්ණ ලෝක සිතියම)",0,"","https://drive.google.com/file/d/1G42A_aj3wb76sCyQETTmKc_UAQSEB1WJ/view?usp=sharing"],
+  ["සාමාන්‍ය පෙළ (යුරේසියා සිතියම)",0,"","https://drive.google.com/file/d/1m5_DM2eStcfhunN0Q4hmlY8Tpvha2ARJ/view?usp=sharing"],
+  ["උසස් පෙළ (යුරෝපා සිතියම-කළු මුහුද දක්වා)",0,"","https://drive.google.com/file/d/1m5_DM2eStcfhunN0Q4hmlY8Tpvha2ARJ/view?usp=sharing"],
+  ["උසස් පෙළ (යුරෝපා සිතියම-කැස්පියන් මුහුද දක්වා)",0,"","https://drive.google.com/file/d/1DhEz4XLOXbmoMnXmOvmITiWG7JM2EQsE/view?usp=sharing"],
+  ["උසස් පෙළ (ඉන්දියා සිතියම)",0,"","https://drive.google.com/file/d/1sbnrZENSVpd9yj4why2hQwYrhTKU9Zk2/view?usp=sharing"],
+  ["උසස් පෙළ (ලංකා සිතියම)",0,"","https://drive.google.com/file/d/1nttZpMikSVxSp6YYu4H0keOD_BEOIXVU/view?usp=sharing"]]},
  mss:{label:"MSs FREE",free:true,items:[
-  ["සාමාන්‍ය පෙළ ඉතිහාසය-1",00,"","https://drive.google.com/drive/folders/1U47fyUeeWjk4lA_lQaj5UQhQq38mZr5G?usp=sharing"],
-  ["උසස් පෙළ යුරෝපා ඉතිහාසය-2",00,"","https://drive.google.com/drive/folders/1ORpuMVJVMfmbemmtNcG2y7gJfSAixGDe?usp=drive_link"],
-  ["උසස් පෙළ ඉන්දියා ඉතිහාසය-3",00,"","https://drive.google.com/drive/folders/1AeaBBQCHCBjd5_nML3V4Ma98nN3NSJ2I?usp=sharing"],
-  ["ලංකා ඉතිහාසය උසස් පෙළ",00,"","https://drive.google.com/drive/folders/11FjIlGY59cHI9I6GEd6y0IHY5XfbDEuq?usp=sharing"],
-  ["සාමාන්‍ය පෙළ නිබන්ධන හා ප්‍රශ්නපත්‍ර",00,"","https://drive.google.com/drive/folders/1s6d1hxGvsk0Q9Qli0yogwg4v_LAygCJP?usp=drive_link"]]},
+  ["සාමාන්‍ය පෙළ ඉතිහාසය-1",0,"","https://drive.google.com/drive/folders/1U47fyUeeWjk4lA_lQaj5UQhQq38mZr5G?usp=sharing"],
+  ["උසස් පෙළ යුරෝපා ඉතිහාසය-2",0,"","https://drive.google.com/drive/folders/1ORpuMVJVMfmbemmtNcG2y7gJfSAixGDe?usp=drive_link"],
+  ["උසස් පෙළ ඉන්දියා ඉතිහාසය-3",0,"","https://drive.google.com/drive/folders/1AeaBBQCHCBjd5_nML3V4Ma98nN3NSJ2I?usp=sharing"],
+  ["ලංකා ඉතිහාසය උසස් පෙළ",0,"","https://drive.google.com/drive/folders/11FjIlGY59cHI9I6GEd6y0IHY5XfbDEuq?usp=sharing"],
+  ["සාමාන්‍ය පෙළ නිබන්ධන හා ප්‍රශ්නපත්‍ර",0,"","https://drive.google.com/drive/folders/1s6d1hxGvsk0Q9Qli0yogwg4v_LAygCJP?usp=drive_link"]]},
 free:{label:"BOOK FREE",free:true,items:[
-  ["සාමාන්‍ය පෙළ ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/19siMFGGFAd5nTOQpv1eFVXft6Vvkknax/view?usp=drive_link"],
-  ["උසස් පෙළ ලංකා ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/16bg1THK-pWvuA2DFQijiqYh7LKVse4tn/view?usp=sharing"],
-  ["උසස් පෙළ ඉන්දියා ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/1HAcBUf0PFnOTZXJaIOo2zIWRgAZOq5io/view?usp=drive_link"],
-  ["උසස් පෙළ යුරෝපා ඉතිහාසය සිතියම් පොත",00,"","https://drive.google.com/file/d/1CAZcbETLwTIYXNPg-aHPK8ApFbGCIK_d/view?usp=drive_link"],
-  ["උසස් පෙළ ලංකා ඉතිහාසය සිතියම් අභ්‍යාස පොත",00,"","https://drive.google.com/file/d/1-G5-qLVzbTGZ7f8Gg9UCG0JeC-PLJwiS/view?usp=drive_link"],
-  ["උසස් පෙළ ඉන්දියා ඉතිහාසය සිතියම් අභ්‍යාස පොත",00,"","https://drive.google.com/file/d/1hNhuxK9FgBzT0z9uwIvHmHrZQwaju6_I/view?usp=drive_link"],
-  ["උසස් පෙළ යුරෝපා ඉතිහාසය සිතියම් අභ්‍යාස පොත",00,"","https://drive.google.com/file/d/1861lsCrkh2pmY_dPfNLIr_c59AD3D8v2/view?usp=drive_link"]]},
+  ["සාමාන්‍ය පෙළ ඉතිහාසය සිතියම් පොත",0,"","https://drive.google.com/file/d/19siMFGGFAd5nTOQpv1eFVXft6Vvkknax/view?usp=drive_link"],
+  ["උසස් පෙළ ලංකා ඉතිහාසය සිතියම් පොත",0,"","https://drive.google.com/file/d/16bg1THK-pWvuA2DFQijiqYh7LKVse4tn/view?usp=sharing"],
+  ["උසස් පෙළ ඉන්දියා ඉතිහාසය සිතියම් පොත",0,"","https://drive.google.com/file/d/1HAcBUf0PFnOTZXJaIOo2zIWRgAZOq5io/view?usp=drive_link"],
+  ["උසස් පෙළ යුරෝපා ඉතිහාසය සිතියම් පොත",0,"","https://drive.google.com/file/d/1CAZcbETLwTIYXNPg-aHPK8ApFbGCIK_d/view?usp=drive_link"],
+  ["උසස් පෙළ ලංකා ඉතිහාසය සිතියම් අභ්‍යාස පොත",0,"","https://drive.google.com/file/d/1-G5-qLVzbTGZ7f8Gg9UCG0JeC-PLJwiS/view?usp=drive_link"],
+  ["උසස් පෙළ ඉන්දියා ඉතිහාසය සිතියම් අභ්‍යාස පොත",0,"","https://drive.google.com/file/d/1hNhuxK9FgBzT0z9uwIvHmHrZQwaju6_I/view?usp=drive_link"],
+  ["උසස් පෙළ යුරෝපා ඉතිහාසය සිතියම් අභ්‍යාස පොත",0,"","https://drive.google.com/file/d/1861lsCrkh2pmY_dPfNLIr_c59AD3D8v2/view?usp=drive_link"]]},
 };
-const cart={}; let inv="EDU"+Math.floor(100000+Math.random()*900000), cust=null, pending=null;
+
+const cart={}; let inv=newInv(), cust=null, saved=false, busy=false;
+function newInv(){return "EDU"+Math.floor(100000+Math.random()*900000)}
 const $=s=>document.querySelector(s), fmt=n=>n.toLocaleString("en-US");
-function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(m,ms){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),ms||1800)}
 
 // render shop
 $("#shop").innerHTML=Object.entries(sets).map(([id,s])=>`<section id="${id}" class="${s.free?"free":""}"><div class="side">${s.label}</div><div class="grid">`+
@@ -197,46 +226,94 @@ $("#infoClose").onclick=()=>$("#infoOv").classList.remove("on");
 $("#infoOv").addEventListener("click",e=>{if(e.target.id==="infoOv")e.target.classList.remove("on")});
 const count=()=>Object.values(cart).reduce((a,c)=>a+c.qty,0);
 function upd(){$("#cartBtn").textContent=`Your Cart (${count()})`}
+function totals(){const items=Object.values(cart),sub=items.reduce((a,c)=>a+c.price*c.qty,0),dis=Math.round(sub*DISCOUNT);return{items,sub,dis,tot:sub-dis}}
 
-// invoice text
-function build(){
- const now=new Date(),p=n=>String(n).padStart(2,"0");
- const date=`${p(now.getDate())}/${p(now.getMonth()+1)}/${now.getFullYear()}`,time=`${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
- const items=Object.values(cart),sub=items.reduce((a,c)=>a+c.price*c.qty,0),dis=Math.round(sub*DISCOUNT),tot=sub-dis;
- const L="────────────────────────────────────────",H="════════════════════════════════════════";
- let t=`🏪 EDUHELP BOOKSTORE\n📧 urc.eduhelp@gmail.com\n📞 +94716637804 / 0701551279\n\n${H}\n                 📋 INVOICE\n${H}\n\n📅 දිනය: ${date}\n⏰ වේලාව: ${time}\n🆔 Invoice #: ${inv}\n\n${L}\n📚 ඇණවුම් කළ පොත්:\n${L}\n\n`;
- t+=items.length?items.map((c,i)=>`${i+1}. ${c.name}${c.qty>1?" x"+c.qty:""}\n   Rs.${fmt(c.price*c.qty)}`).join("\n\n"):"(Cart එක හිස්ය)";
- t+=`\n\n${L}\n💰 ගෙවීම් සාරාංශය:\n${L}\n\nඋප එකතුව (Sub Total): Rs.${fmt(sub)}\nවට්ටම (Discount): -Rs.${fmt(dis)}\n🎯 ඔබ ගෙවියයුතු මුදල: Rs.${fmt(tot)}\n\n${H}\n💳 ගෙවීම් විස්තර:\n${H}\n\n🏦 PEOPLE'S BANK - Mathugama\n💳 A/C: 070-2-001-6-23-28-309\n👤 UKDA KOSALA\n\n🏦 BANK OF CEYLON - Kalutara\n💳 A/C: 89-32-36-00\n👤 RG LAKMINI\n\n${L}\n📋 සටහන්:\n${L}\n\n✅ Online Transfer කළ පසු bank message එක forward කරන්න\n✅ Cash deposit කළ නම් receipt එකේ photo එක එවන්න\n✅ ඔබගේ නම, ලිපිනය සහ phone number එවන්න\n✅ Payment confirm වූ පසු delivery arrange කරනවා\n\n${H}\n📞 අමතන්න:\n${H}\n\n📱 WhatsApp: +94716637804\n☎️  Call: 0701551279\n📧 Email: urc.eduhelp@gmail.com\n\n🙏 ඔබගේ ඇණවුම සඳහා ස්තුතියි!\nEDUHELP BOOKSTORE - Your Education Partner`;
- if(cust)t+=`\n\n${H}\n👤 ගනුදෙනුකරුගේ විස්තර:\n${H}\n\nනම: ${cust.n}\nලිපිනය: ${cust.a}\nදුරකතන: ${cust.p}`;
- return t;
-}
+// cart popup
 function render(){
- $("#rows").innerHTML=Object.entries(cart).filter(([,c])=>c.qty>0).map(([k,c])=>`<div class="row"><span>${c.name} — Rs.${fmt(c.price)}</span>
- <button class="q" data-k="${k}" data-d="-1" aria-label="අඩු කරන්න">−</button><b>${c.qty}</b><button class="q" data-k="${k}" data-d="1" aria-label="වැඩි කරන්න">+</button></div>`).join("");
- $("#inv").textContent=build();upd();
+ $("#rows").innerHTML=Object.entries(cart).filter(([,c])=>c.qty>0).map(([k,c])=>`<div class="row"><span>${esc(c.name)} — Rs.${fmt(c.price)}</span>
+ <button class="q" data-k="${k}" data-d="-1" aria-label="අඩු කරන්න">−</button><b>${c.qty}</b><button class="q" data-k="${k}" data-d="1" aria-label="වැඩි කරන්න">+</button></div>`).join("")||`<p style="color:var(--mu)">Cart එක හිස්ය</p>`;
+ const t=totals();
+ $("#sum").innerHTML=`උප එකතුව: Rs.${fmt(t.sub)}<br>වට්ටම: -Rs.${fmt(t.dis)}<br>ඔබ ගෙවියයුතු මුදල: <b>Rs.${fmt(t.tot)}</b>`;
+ upd();
 }
-$("#cartBtn").onclick=()=>{cust=null;render();$("#cartOv").classList.add("on")};
+$("#cartBtn").onclick=()=>{render();$("#cartOv").classList.add("on")};
 $("#closeCart").onclick=()=>$("#cartOv").classList.remove("on");
 $("#rows").addEventListener("click",e=>{const b=e.target.closest("[data-k]");if(!b)return;
- const c=cart[b.dataset.k];c.qty+=+b.dataset.d;if(c.qty<1)delete cart[b.dataset.k];cust=null;render()});
+ const c=cart[b.dataset.k];c.qty+=+b.dataset.d;if(c.qty<1)delete cart[b.dataset.k];saved=false;render()});
 
-// customer popup then action
-document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{
+// step 1: Confirm Order -> customer details popup
+$("#confirmOrder").onclick=()=>{
  if(!count()){toast("Cart එක හිස්ය");return}
- pending=b.dataset.go;$("#formOv").classList.add("on");$("#cn").focus()});
+ $("#formOv").classList.add("on");$("#cn").focus()};
 $("#closeForm").onclick=()=>$("#formOv").classList.remove("on");
+
+// step 2: OK -> orange notice popup
 $("#confirm").onclick=()=>{
- const n=$("#cn").value.trim(),a=$("#ca").value.trim(),p=$("#cp").value.trim();
- if(!n||!a||!p){toast("නම, ලිපිනය, දුරකතන අංකය සම්පූර්ණ කරන්න");return}
- cust={n,a,p};render();$("#formOv").classList.remove("on");
- const text=build();
- if(pending==="wa"){window.open(`https://wa.me/${WA}?text=${encodeURIComponent(text)}`,"_blank")}
- else{copy(text)}
+ const n=$("#cn").value.trim(),p=$("#cp").value.trim(),a=$("#ca").value.trim();
+ if(!n||!a||!p){toast("නම, දුරකතන අංකය, ලිපිනය සම්පූර්ණ කරන්න");return}
+ if(p.replace(/\D/g,"").length<9){toast("දුරකතන අංකය නිවැරදි දැයි පරීක්ෂා කරන්න");return}
+ cust={n,a,p};
+ $("#formOv").classList.remove("on");$("#cartOv").classList.remove("on");$("#payOv").classList.add("on");
 };
-function copy(text){
- const fb=()=>{const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();try{document.execCommand("copy");toast("Invoice එක copy වුණා")}catch(_){toast("Copy කළ නොහැකි විය — අතින් තෝරා copy කරන්න")}t.remove()};
- try{navigator.clipboard.writeText(text).then(()=>toast("Invoice එක copy වුණා"),fb)}catch(_){fb()}
+$("#closePay").onclick=()=>{
+ $("#payOv").classList.remove("on");
+ if(saved){for(const k in cart)delete cart[k];inv=newInv();cust=null;saved=false;$("#cn").value=$("#cp").value=$("#ca").value="";upd()}
+};
+
+// bank detail click: save + copy + PDF
+async function saveOrder(){
+ if(!sb)throw new Error("Supabase සකසා නැත");
+ const t=totals();
+ const {error}=await sb.from(ORDERS_TABLE).insert({
+  invoice_no:inv,customer_name:cust.n,phone:cust.p,address:cust.a,
+  items:t.items.map(c=>({name:c.name,qty:c.qty,price:c.price})),
+  subtotal:t.sub,discount:t.dis,total:t.tot});
+ if(error)throw error;
 }
+function copyText(text){
+ const fb=()=>{const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(_){}t.remove()};
+ try{navigator.clipboard.writeText(text).catch(fb)}catch(_){fb()}
+}
+function invoiceHTML(){
+ const t=totals(),now=new Date(),p=n=>String(n).padStart(2,"0");
+ const d=`${p(now.getDate())}/${p(now.getMonth()+1)}/${now.getFullYear()} ${p(now.getHours())}:${p(now.getMinutes())}`;
+ const td="padding:7px 6px;border-bottom:1px solid #ddd;font-size:14px";
+ return `<div style="border-bottom:4px solid #1f9d43;padding-bottom:10px;margin-bottom:14px">
+ <div style="font:700 28px Oswald,sans-serif;color:#1f9d43">EDUHELP BOOKSTORE</div>
+ <div style="font-size:13px;color:#444">urc.eduhelp@gmail.com | +94716637804 / 0701551279</div></div>
+ <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:12px"><div><b>INVOICE</b><br>Invoice #: ${inv}<br>දිනය: ${d}</div>
+ <div style="text-align:right"><b>${esc(cust.n)}</b><br>${esc(cust.p)}<br>${esc(cust.a).replace(/\n/g,"<br>")}</div></div>
+ <table style="width:100%;border-collapse:collapse"><tr style="background:#1f9d43;color:#fff;font-size:13px"><th style="padding:7px 6px;text-align:left">#</th><th style="padding:7px 6px;text-align:left">පොත</th><th style="padding:7px 6px">Qty</th><th style="padding:7px 6px;text-align:right">Rs.</th></tr>
+ ${t.items.map((c,i)=>`<tr><td style="${td}">${i+1}</td><td style="${td}">${esc(c.name)}</td><td style="${td};text-align:center">${c.qty}</td><td style="${td};text-align:right">${fmt(c.price*c.qty)}</td></tr>`).join("")}</table>
+ <div style="text-align:right;font-size:14px;line-height:1.9;margin:12px 0">උප එකතුව: Rs.${fmt(t.sub)}<br>වට්ටම: -Rs.${fmt(t.dis)}<br><b style="font-size:17px;color:#137a31">ගෙවිය යුතු මුදල: Rs.${fmt(t.tot)}</b></div>
+ <div style="border:1.5px solid #1f9d43;border-radius:8px;padding:10px;font-size:13.5px;line-height:1.8">
+ <b>💳 ගෙවීම් විස්තර</b><br>🏦 PEOPLE'S BANK - Mathugama | A/C: 070-2-001-6-23-28-309 | UKDA KOSALA<br>🏦 BANK OF CEYLON - Kalutara | A/C: 89-32-36-00 | RG LAKMINI</div>
+ <div style="font-size:13px;line-height:1.8;margin-top:10px">✅ Online Transfer කළ පසු bank message එක forward කරන්න<br>✅ Cash deposit කළ නම් receipt එකේ photo එක එවන්න<br>✅ Payment confirm වූ පසු delivery arrange කරනවා<br>📱 WhatsApp: +94716637804 | ☎️ 0701551279</div>
+ <div style="text-align:center;margin-top:14px;font-size:14px">🙏 ඔබගේ ඇණවුම සඳහා ස්තුතියි! — EDUHELP BOOKSTORE</div>`;
+}
+async function makePDF(){
+ const el=$("#pdfInv");el.innerHTML=invoiceHTML();
+ try{await document.fonts.ready}catch(_){}
+ const canvas=await html2canvas(el,{scale:2,backgroundColor:"#ffffff",useCORS:true});
+ const pdf=new window.jspdf.jsPDF("p","mm","a4"),w=210,pageH=297,h=canvas.height*w/canvas.width,img=canvas.toDataURL("image/jpeg",.92);
+ let y=0,left=h;pdf.addImage(img,"JPEG",0,0,w,h);left-=pageH;
+ while(left>0){y-=pageH;pdf.addPage();pdf.addImage(img,"JPEG",0,y,w,h);left-=pageH}
+ pdf.save(`Invoice-${inv}.pdf`);el.innerHTML="";
+}
+$("#bankBtn").onclick=async()=>{
+ if(busy||!cust||!count())return;
+ busy=true;$("#bankBtn").disabled=true;
+ copyText(BANK_TEXT);                       // 1) bank details copy (user gesture තුළ ම)
+ try{
+  if(!saved){await saveOrder();saved=true}  // 2) Supabase වෙත සුරැකීම
+ }catch(err){
+  console.error(err);busy=false;$("#bankBtn").disabled=false;
+  toast("ඇණවුම සුරැකීම අසාර්ථක විය. නැවත Click කර උත්සාහ කරන්න.",3500);return}
+ try{await makePDF()}                       // 3) Invoice PDF download
+ catch(err){console.error(err);toast("ඇණවුම සුරැකුණා, නමුත් PDF සෑදීම අසාර්ථක විය.",3500);busy=false;$("#bankBtn").disabled=false;return}
+ toast("ඇණවුම සුරැකුණා ✔ Bank details copy වුණා ✔ Invoice PDF එක download වුණා ✔",3500);
+ busy=false;$("#bankBtn").disabled=false;
+};
 </script>
 </body>
 </html>
