@@ -63,7 +63,9 @@ footer ul{padding-left:20px;font-size:14px;line-height:1.7;margin:20px 0}
 .bankbtn:active{transform:translateY(2px);box-shadow:none}
 .msg{line-height:1.9;font-size:14.5px;margin:0}
 label{display:block;font-size:13px;margin:10px 0 4px}
-input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--mu);background:var(--card);color:var(--tx);font:14px "Noto Sans Sinhala"}
+input,textarea,select{width:100%;padding:9px;border-radius:8px;border:1px solid var(--mu);background:var(--card);color:var(--tx);font:14px "Noto Sans Sinhala"}
+select:disabled{opacity:.6;cursor:not-allowed}
+.req{color:#d92d20;font-weight:700}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;max-width:90%;text-align:center}
 .toast.on{opacity:1}
 #pdfInv{position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#111;padding:28px;font-family:"Noto Sans Sinhala",sans-serif}
@@ -118,7 +120,7 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <h2>ඔබගේ විස්තර</h2>
 <label for="cm">සාමාජික අංකය (කලින් ඇණවුම් කර ඇත්නම් පමණක්)</label>
 <div class="mrow"><div class="pfx" style="flex:1"><span class="pf" aria-hidden="true">EH</span><input id="cm" type="text" inputmode="numeric" placeholder="123456" autocomplete="off" aria-label="සාමාජික අංකය (EH ට පසු ඉලක්කම් 6)"></div><button class="btn" id="findMember" type="button">සොයන්න</button></div>
-<p class="hint">අංකය ඇතුළත් කර "සොයන්න" ඔබන්න — නම, දුරකතනය, ලිපිනය ස්වයංක්‍රීයව පිරෙනු ඇත. අවශ්‍ය නම් වෙනස් කළ හැක. නව පාරිභෝගිකයෙකු නම් හිස්ව තබන්න; ඔබට අංකයක් ලැබෙනු ඇත.</p>
+<p class="hint">අංකය ඇතුළත් කර "සොයන්න" ඔබන්න — නම, දුරකතනය, ලිපිනය, පළාත, දිස්ත්‍රික්කය ස්වයංක්‍රීයව පිරෙනු ඇත. අවශ්‍ය නම් වෙනස් කළ හැක. නව පාරිභෝගිකයෙකු නම් හිස්ව තබන්න; ඔබට අංකයක් ලැබෙනු ඇත.</p>
 <div class="sum" id="memInfo" style="display:none"></div>
 <div class="starbox" id="starBox" style="display:none">
  <label class="chk"><input type="checkbox" id="useStars"><span id="starTxt"></span></label>
@@ -129,6 +131,10 @@ input,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid var(--m
 <div class="pfx"><span class="pf" aria-hidden="true">+94</span><input id="cp" type="tel" inputmode="numeric" placeholder="7XXXXXXXX" autocomplete="tel-national" aria-label="WhatsApp අංකය (+94 ට පසු, මුල 0 නැතිව)"></div>
 <p class="hint warn">⚠ WhatsApp අංකයක් පමණක් ඇතුළත් කරන්න. කරුණාකර මුල 0 ඉලක්කම නැතිව ඇතුළත් කරන්න (උදා: 0771234567 නම් 771234567 ලෙස). අංකය 7 න් ආරම්භ විය යුතු ය.</p>
 <label for="ca">ලිපිනය</label><textarea id="ca" rows="3" autocomplete="street-address"></textarea>
+<label for="cv">පදිංචි පළාත <span class="req">*</span></label>
+<select id="cv" required aria-required="true"></select>
+<label for="cd">දිස්ත්‍රික්කය <span class="req">*</span></label>
+<select id="cd" required aria-required="true" disabled></select>
 <div class="acts" style="margin-top:14px"><button class="btn" id="confirm">OK</button><button class="btn x" id="closeForm">Cancel</button></div>
 </div></div>
 
@@ -168,6 +174,19 @@ const DISCOUNT=0.10;
 const STAR_UNIT=100;   // රු.100ක් ගෙවන විට 1 Star (අගය රු.1) — supabase-setup.sql හි අගයත් මේ හා සමාන විය යුතු ය
 const FREE_PDF="https://drive.google.com/uc?export=download&id=1hUyV97t2X_vdOpMRNG10i_kn8s7FQjWR";
 const BANK_TEXT="🏦 PEOPLE'S BANK - Mathugama\n💳 A/C: 070-2-001-6-23-28-309\n👤 UKDA KOSALA\n\n🏦 BANK OF CEYLON - Kalutara\n💳 A/C: 89-32-36-00\n👤 RG LAKMINI";
+
+/* ===== පළාත් සහ දිස්ත්‍රික්ක (පළාත් 9 · දිස්ත්‍රික්ක 25) ===== */
+const PROV={
+ "බස්නාහිර":["කොළඹ","ගම්පහ","කළුතර"],
+ "මධ්‍යම":["මහනුවර","මාතලේ","නුවරඑළිය"],
+ "දකුණු":["ගාල්ල","මාතර","හම්බන්තොට"],
+ "උතුරු":["යාපනය","කිලිනොච්චි","මන්නාරම","වවුනියාව","මුලතිව්"],
+ "නැගෙනහිර":["ත්‍රිකුණාමලය","මඩකලපුව","අම්පාර"],
+ "වයඹ":["කුරුණෑගල","පුත්තලම"],
+ "උතුරු මැද":["අනුරාධපුර","පොළොන්නරුව"],
+ "ඌව":["බදුල්ල","මොනරාගල"],
+ "සබරගමුව":["රත්නපුර","කැගල්ල"]
+};
 
 /* Sample: {n:"නම", u:"Google Drive Link"} */
 const samples=[
@@ -232,6 +251,26 @@ function toast(m,ms){const t=$("#toast");t.textContent=m;t.classList.add("on");c
 const LS="eh_member_no";
 function lsGet(){try{return localStorage.getItem(LS)||""}catch(_){return ""}}
 function lsSet(v){try{localStorage.setItem(LS,v)}catch(_){}}
+
+/* ===== පළාත / දිස්ත්‍රික්ක dropdown ===== */
+$("#cv").innerHTML='<option value="">— පළාත තෝරන්න —</option>'+Object.keys(PROV).map(p=>`<option value="${p}">${p} පළාත</option>`).join("");
+function fillDist(pv,sel){
+ const d=$("#cd");
+ d.innerHTML=pv&&PROV[pv]
+  ?'<option value="">— දිස්ත්‍රික්කය තෝරන්න —</option>'+PROV[pv].map(x=>`<option value="${x}">${x}</option>`).join("")
+  :'<option value="">— පළමුව පළාත තෝරන්න —</option>';
+ d.disabled=!(pv&&PROV[pv]);
+ d.value=sel||"";
+}
+fillDist("");
+$("#cv").addEventListener("change",()=>fillDist($("#cv").value));
+// සුරැකි ලිපිනයෙන් (අග පේළියේ "දිස්ත්‍රික්කය, පළාත") ලිපිනය / දිස්ත්‍රික්කය / පළාත වෙන් කරයි
+function splitAddr(full){
+ full=String(full||"");
+ const m=full.match(/\n?([^\n,]+) දිස්ත්‍රික්කය, ([^\n]+) පළාත\s*$/);
+ if(m&&PROV[m[2]]&&PROV[m[2]].includes(m[1]))return{a:full.slice(0,m.index).trim(),ds:m[1],pv:m[2]};
+ return{a:full,ds:"",pv:""};
+}
 
 // render shop
 $("#shop").innerHTML=Object.entries(sets).map(([id,s])=>`<section id="${id}" class="${s.free?"free":""}"><div class="side">${s.label}</div><div class="grid">`+
@@ -309,8 +348,10 @@ async function findMember(){
   if(error)throw error;
   if(!data){member=null;renderMember();toast("එම සාමාජික අංකය හමු නොවීය");return}
   member=data;$("#cm").value=String(data.member_no).replace(/^EH/i,"");
-  $("#cn").value=data.name||"";$("#cp").value=toLocalPhone(data.phone);$("#ca").value=data.address||"";
-  renderMember();toast("ඔබගේ විස්තර පුරවා ඇත. අවශ්‍ය නම් වෙනස් කරන්න");
+  const ad=splitAddr(data.address);
+  $("#cn").value=data.name||"";$("#cp").value=toLocalPhone(data.phone);$("#ca").value=ad.a;
+  $("#cv").value=ad.pv;fillDist(ad.pv,ad.ds);
+  renderMember();toast("ඔබගේ විස්තර පුරවා ඇත. අවශ්‍ය නම් වෙනස් කරන්න"+(ad.ds?"":" (පළාත හා දිස්ත්‍රික්කය තෝරන්න)"),3000);
  }catch(e){console.error(e);toast("සෙවීම අසාර්ථක විය. නැවත උත්සාහ කරන්න",3000)}
  finally{b.disabled=false}
 }
@@ -347,29 +388,35 @@ $("#closeForm").onclick=()=>$("#formOv").classList.remove("on");
 
 // step 2: OK -> orange notice popup
 $("#confirm").onclick=()=>{
- const n=$("#cn").value.trim(),pd=$("#cp").value.trim(),a=$("#ca").value.trim(),m=$("#cm").value.trim();
+ const n=$("#cn").value.trim(),pd=$("#cp").value.trim(),a=$("#ca").value.trim(),m=$("#cm").value.trim(),
+  pv=$("#cv").value,ds=$("#cd").value;
  if(m&&!member){toast("සාමාජික අංකය තහවුරු කිරීමට \"සොයන්න\" ඔබන්න, නැතහොත් එය හිස් කරන්න",3000);return}
  if(!n||!a||!pd){toast("නම, WhatsApp අංකය, ලිපිනය සම්පූර්ණ කරන්න");return}
  if(!/^7\d{8}$/.test(pd)){toast("WhatsApp අංකය 7 න් ආරම්භ වන ඉලක්කම් 9ක් විය යුතුය (මුල 0 නැතිව)",3500);$("#cp").focus();return}
+ if(!pv||!PROV[pv]){toast("පදිංචි පළාත තෝරන්න",3000);$("#cv").focus();return}
+ if(!ds||!PROV[pv].includes(ds)){toast("දිස්ත්‍රික්කය තෝරන්න (අනිවාර්ය වේ)",3000);$("#cd").focus();return}
  const p="+94"+pd;
- cust={n,a,p,m:member?member.member_no:"",stars:starUse()};
+ cust={n,a,p,pv,ds,m:member?member.member_no:"",stars:starUse()};
  const t=totals(),pay=t.tot-cust.stars;
  $("#paySum").innerHTML=`${member?`සාමාජික අංකය: <b>${esc(member.member_no)}</b><br>`:`ඔබට නව සාමාජික අංකයක් ලැබෙනු ඇත (ඇණවුම සුරැකූ පසු පෙන්වයි)<br>`}`+
+  `පළාත / දිස්ත්‍රික්කය: <b>${esc(pv)} / ${esc(ds)}</b><br>`+
   `වට්ටම් පසු මුදල: Rs.${fmt(t.tot)}`+(cust.stars?`<br>Star වට්ටම: -Rs.${fmt(cust.stars)}`:"")+`<br>ඔබ ගෙවිය යුතු මුදල: <b>Rs.${fmt(pay)}</b>`;
  $("#formOv").classList.remove("on");$("#cartOv").classList.remove("on");$("#payOv").classList.add("on");
 };
 $("#closePay").onclick=()=>{
  $("#payOv").classList.remove("on");
  if(saved){for(const k in cart)delete cart[k];inv=newInv();cust=null;saved=false;result=null;member=null;
-  $("#cn").value=$("#cp").value=$("#ca").value=$("#cm").value="";$("#useStars").checked=false;renderMember();upd()}
+  $("#cn").value=$("#cp").value=$("#ca").value=$("#cm").value="";$("#cv").value="";fillDist("");$("#useStars").checked=false;renderMember();upd()}
 };
 
 // bank detail click: save + copy + PDF
 async function saveOrder(){
  if(!sb)throw new Error("Supabase සකසා නැත");
  const t=totals();
+ // පළාත / දිස්ත්‍රික්කය ලිපිනයේ අග පේළියක් ලෙස ම සුරැකේ (database වෙනස් කිරීමක් අවශ්‍ය නැත)
+ const fullAddr=cust.a+"\n"+cust.ds+" දිස්ත්‍රික්කය, "+cust.pv+" පළාත";
  const {data,error}=await sb.rpc("place_order",{
-  p_invoice:inv,p_member_no:cust.m||null,p_name:cust.n,p_phone:cust.p,p_address:cust.a,
+  p_invoice:inv,p_member_no:cust.m||null,p_name:cust.n,p_phone:cust.p,p_address:fullAddr,
   p_items:t.items.map(c=>({name:c.name,qty:c.qty,price:c.price})),
   p_subtotal:t.sub,p_discount:t.dis,p_use_stars:cust.stars});
  if(error)throw error;
@@ -378,6 +425,7 @@ async function saveOrder(){
  lsSet(result.member_no);
  $("#paySum").innerHTML=`ඔබගේ සාමාජික අංකය: <span class="memno">${esc(result.member_no)}</span> (මතක තබාගන්න)<br>`+
   `මෙය ඔබගේ <b>${fmt(result.order_no)}</b> වන ඇණවුමයි | මෙතෙක් ගෙවූ මුදල: <b>Rs.${fmt(result.total_spent)}</b><br>`+
+  `පළාත / දිස්ත්‍රික්කය: <b>${esc(cust.pv)} / ${esc(cust.ds)}</b><br>`+
   (result.stars_used?`Star වට්ටම: -Rs.${fmt(result.star_discount)}<br>`:"")+
   `ඔබ ගෙවිය යුතු මුදල: <b>Rs.${fmt(result.total)}</b><br>`+
   `මෙම ඇණවුමෙන් ලැබෙන Star: <b>${fmt(result.stars_earned)}</b> | දැනට ඇති Star: <b>${fmt(result.stars_balance)}</b>`;
@@ -394,7 +442,7 @@ function invoiceHTML(){
  <div style="font:700 28px Oswald,sans-serif;color:#1f9d43">EDUHELP BOOKSTORE</div>
  <div style="font-size:13px;color:#444">urc.eduhelp@gmail.com | +94716637804 / 0701551279</div></div>
  <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:12px"><div><b>INVOICE</b><br>Invoice #: ${inv}<br>දිනය: ${d}</div>
- <div style="text-align:right"><b>${esc(cust.n)}</b><br>${esc(cust.p)}<br>${esc(cust.a).replace(/\n/g,"<br>")}</div></div>
+ <div style="text-align:right"><b>${esc(cust.n)}</b><br>${esc(cust.p)}<br>${esc(cust.a).replace(/\n/g,"<br>")}<br>${esc(cust.ds)} දිස්ත්‍රික්කය, ${esc(cust.pv)} පළාත</div></div>
  <div style="background:#f1f8f3;border:1.5px solid #1f9d43;border-radius:8px;padding:9px 12px;font-size:13.5px;line-height:1.8;margin-bottom:12px">
  <b>සාමාජික අංකය: ${esc(r.member_no)}</b> &nbsp;|&nbsp; මෙය ඔබගේ <b>${fmt(r.order_no)}</b> වන ඇණවුමයි<br>
  මෙම ඇණවුම ඇතුළුව මෙතෙක් අප වෙත ගෙවූ මුදල: <b>Rs.${fmt(r.total_spent)}</b></div>
