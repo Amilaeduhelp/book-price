@@ -276,7 +276,8 @@ function splitAddr(full){
 // render shop
 $("#shop").innerHTML=Object.entries(sets).map(([id,s])=>`<section id="${id}" class="${s.free?"free":""}"><div class="side">${s.label}</div><div class="grid">`+
  s.items.map(([n,p,,link],i)=>{const key=id+i;const m=n.match(/-(\d)$/);const t=m?n.slice(0,-2):n,part=m?m[1]:null;
- return `<div class="card"><div class="t">${t}<div class="s">(උසස් පෙල)${part?" - "+part:""}</div></div><div class="p">${p}/-</div>
+ const lvl=/^11\s*ශ්‍රේණිය|සාමාන්‍ය\s*පෙළ/.test(n)?"(සාමාන්‍ය පෙළ)":"(උසස් පෙල)";
+ return `<div class="card"><div class="t">${t}<div class="s">${lvl}${part?" - "+part:""}</div></div><div class="p">${p}/-</div>
  <button data-info="${key}">විස්තර බලන්න</button>
  ${link?`<button class="linkbtn" data-link="${link}">බලන්න</button>`:""}
  <button class="add" data-key="${key}" data-name="${n}" data-price="${p}" data-free="${s.free?1:0}">${s.free?"DOWNLOAD PDF":"ADD TO CART"}</button></div>`}).join("")+`</div></section>`).join("");
